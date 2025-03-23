@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebVerse - חנות אתרים תלת-ממדית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    /* הגדלת אורך התצוגה המקדימה פי 4 לכל סוגי המכשירים */
+    .site-preview-frame {
+      height: 2000px !important; /* הגדלת הגובה פי 4 מ-500px ל-2000px */
+    }
+    
+    /* התאמות ספציפיות למובייל */
+    .device-frame.mobile {
+      width: 6.25% !important; /* הקטנת הרוחב ל-6.25% (חצי מ-12.5%) */
+      margin: 0 auto !important; /* מרכוז אופקי */
+    }
+    
+    /* התאמות לתצוגת מחשב וטאבלט */
+    .device-frame.desktop {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100% !important;
+      aspect-ratio: auto !important;
+    }
+    
+    .device-frame.tablet {
+      width: 50% !important;
+      max-width: 50% !important;
+      margin: 0 auto !important;
+      height: 100% !important;
+      aspect-ratio: auto !important;
+    }
+    
+    /* הגדלת המרווח בין הכותרת לקוביה פי 2 */
+    .cube-showcase .section-header {
+      margin-bottom: 6rem !important; /* הכפלת המרווח מ-3rem ל-6rem */
+    }
+  </style>
+</head>
+<body>
+  <!-- לוגו וניווט -->
+  <header>
+    <div class="logo">
+      <span class="logo-text">Web<span class="accent">Verse</span></span>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#showcase" class="active">בית</a></li>
+        <li><a href="#categories">קטגוריות</a></li>
+        <li><a href="#popular">אתרים מוכנים למכירה</a></li>
+        <li><a href="#about">אודות</a></li>
+        <li><a href="#contact">צור קשר</a></li>
+      </ul>
+    </nav>
+    <div class="nav-buttons">
+      <button class="theme-toggle" aria-label="החלף מצב תצוגה">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="menu-toggle" aria-label="תפריט">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- מסך ראשי עם סצנת תלת-ממד -->
+  <section id="showcase" class="hero-section">
+    <div class="canvas-container">
+      <canvas id="webgl-canvas"></canvas>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">עיצוב <span class="gradient-text">דיגיטלי</span> בממד חדש</h1>
+      <p class="hero-subtitle">בחר מתוך מגוון אתרים מוכנים ומעוצבים או הזמן אתר מותאם אישית</p>
+      <div class="cta-buttons">
+        <button class="cta-primary">גלה אתרים</button>
+        <button class="cta-secondary">צור קשר</button>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>גלול למטה</span>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- קוביה תלת-ממדית -->
+  <section id="cube-showcase" class="cube-showcase">
+    <div class="section-header">
+      <h2><span class="gradient-text">3D</span></h2>
+      <p>לחץ על האתר בקוביה כדי לראות אותו</p>
+    </div>
+    <div class="cube-container">
+      <div class="cube">
+        <div class="face front" data-site="business">
+          <div class="face-content">
+            <h3 class="face-title">אתר מוכן ל-נדל"ן</h3>
+          </div>
+        </div>
+        <div class="face back" data-site="ecommerce">
+          <div class="face-content">
+            <h3 class="face-title">אתר מוכן ל-טיפולי פנים</h3>
+          </div>
+        </div>
+        <div class="face right" data-site="portfolio">
+          <div class="face-content">
+            <h3 class="face-title">אתר מוכן ל-בינה מלאכותית</h3>
+          </div>
+        </div>
+        <div class="face left" data-site="blog">
+          <div class="face-content">
+            <h3 class="face-title">אתר מוכן ל-חדר כושר</h3>
+          </div>
+        </div>
+        <div class="face top" data-site="landing">
+          <div class="face-content">
+            <h3 class="face-title">אתר מוכן ל-ציפורניים</h3>
+          </div>
+        </div>
+        <div class="face bottom" data-site="restaurant">
+          <div class="face-content">
+            <h3 class="face-title">אתר מוכן ל-משרד עורך דין</h3>
+          </div>
+        </div>
+      </div>
+      <div class="cube-controls">
+        <button class="control-btn" id="resetCube">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="control-btn" id="autoRotate">
+          <i class="fas fa-play"></i>
+        </button>
+        <button class="control-btn" id="stopRotate">
+          <i class="fas fa-pause"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- קטגוריות אתרים -->
+  <section id="categories" class="categories-section">
+    <div class="section-header">
+      <h2>קטגוריות <span class="gradient-text">אתרים</span></h2>
+      <p>בחר מתוך מגוון קטגוריות המותאמות לצרכים שונים</p>
+    </div>
+    <div class="categories-grid">
+      <div class="category-card" data-category="business">
+        <div class="category-icon"><i class="fas fa-building"></i></div>
+        <h3>אתרי עסקים</h3>
+        <p>אתרים מקצועיים לעסקים קטנים ובינוניים</p>
+      </div>
+      <div class="category-card" data-category="ecommerce">
+        <div class="category-icon"><i class="fas fa-shopping-cart"></i></div>
+        <h3>חנויות אונליין</h3>
+        <p>פתרונות מסחר אלקטרוני מלאים</p>
+      </div>
+      <div class="category-card" data-category="portfolio">
+        <div class="category-icon"><i class="fas fa-image"></i></div>
+        <h3>תיקי עבודות</h3>
+        <p>הצגת העבודות שלך בצורה מרשימה</p>
+      </div>
+      <div class="category-card" data-category="blog">
+        <div class="category-icon"><i class="fas fa-pen-fancy"></i></div>
+        <h3>בלוגים</h3>
+        <p>פלטפורמות תוכן עשירות ומותאמות אישית</p>
+      </div>
+      <div class="category-card" data-category="landing">
+        <div class="category-icon"><i class="fas fa-rocket"></i></div>
+        <h3>דפי נחיתה</h3>
+        <p>דפים ממוקדים להמרות גבוהות</p>
+      </div>
+      <div class="category-card" data-category="restaurant">
+        <div class="category-icon"><i class="fas fa-utensils"></i></div>
+        <h3>מסעדות</h3>
+        <p>אתרים למסעדות, בתי קפה ועסקי מזון</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- אתרים מוכנים למכירה -->
+  <section id="popular" class="popular-section">
+    <div class="section-header">
+      <h2>אתרים <span class="gradient-text">מוכנים למכירה</span></h2>
+      <p>צפו במגוון אתרים למכירה בתחומים שונים</p>
+    </div>
+    <div class="sites-showcase">
+      <!-- תצוגת אתר מרכזית - תתעדכן בלחיצה על פאות הקוביה -->
+      <div class="site-preview-container">
+        <div class="site-preview-header">
+          <h3 id="preview-site-title">Business Pro</h3>
+        </div>
+        <div class="site-preview-frame">
+          <div class="device-frame desktop">
+            <iframe id="site-preview-iframe" src="https://vipoconnect.github.io/fitnes/" frameborder="0"></iframe>
+            <div class="scroll-indicator">
+              <img src="images/scroll-indicator.svg" alt="גלול לתוכן נוסף">
+            </div>
+            <div class="scroll-overlay">
+              <div class="scroll-message">
+                <i class="fas fa-hand-pointer"></i>
+                <span>גלול למעלה ולמטה לצפייה באתר המלא</span>
+              </div>
+              <div class="scroll-arrows">
+                <i class="fas fa-chevron-up"></i>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </div>
+            <div class="phone-button volume-up"></div>
+            <div class="phone-button volume-down"></div>
+            <div class="phone-button power-button"></div>
+          </div>
+        </div>
+        <div class="site-preview-info">
+          <div class="site-preview-meta">
+            <span class="site-price" id="preview-site-price">₪1,499</span>
+            <div class="site-rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+              <span id="preview-site-rating">(24)</span>
+            </div>
+            <div class="preview-controls">
+              <button class="preview-btn desktop active" data-view="desktop"><i class="fas fa-desktop"></i></button>
+              <button class="preview-btn tablet" data-view="tablet"><i class="fas fa-tablet-alt"></i></button>
+              <button class="preview-btn mobile" data-view="mobile"><i class="fas fa-mobile-alt"></i></button>
+            </div>
+          </div>
+          <p id="preview-site-description">אתר עסקי מקצועי עם עיצוב נקי וחדשני. מתאים לעסקים קטנים ובינוניים, משרדים מקצועיים וחברות שירותים.</p>
+          <button class="site-cta" id="preview-site-cta">צפה באתר</button>
+          <button class="site-cta next-site-btn" id="next-site-btn">לאתר הבא</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- יתרונות -->
+  <section id="features" class="features-section">
+    <div class="section-header">
+      <h2>למה <span class="gradient-text">לבחור בנו?</span></h2>
+      <p>אנחנו מציעים את הפתרונות הטובים ביותר עבור העסק שלך</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+        <h3>מהירות טעינה</h3>
+        <p>האתרים שלנו מותאמים למהירות טעינה אופטימלית, מה שמבטיח חוויית משתמש מעולה וציון גבוה במנועי חיפוש</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+        <h3>תאימות למובייל</h3>
+        <p>כל האתרים שלנו מותאמים באופן מלא לכל סוגי המכשירים - מחשבים, טאבלטים וסמארטפונים</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-icon"><i class="fas fa-search"></i></div>
+        <h3>מותאם SEO</h3>
+        <p>בנינו את האתרים שלנו עם דגש על אופטימיזציה למנועי חיפוש, כדי להבטיח נראות מקסימלית ברשת</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+        <div class="feature-icon"><i class="fas fa-paint-brush"></i></div>
+        <h3>עיצוב מודרני</h3>
+        <p>העיצוב העדכני והמרשים שלנו מושך את העין ויוצר חווית משתמש מעולה שתרשים את הלקוחות שלך</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+        <div class="feature-icon"><i class="fas fa-cog"></i></div>
+        <h3>קל להתאמה</h3>
+        <p>האתרים שלנו ניתנים להתאמה בקלות - שינוי צבעים, גופנים, תמונות ותוכן בהתאם לצרכים שלך</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+        <div class="feature-icon"><i class="fas fa-headset"></i></div>
+        <h3>תמיכה מקצועית</h3>
+        <p>צוות התמיכה המקצועי שלנו זמין עבורך לכל שאלה או בעיה, ומבטיח לך חווית לקוח מושלמת</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- צ'אט תמיכה -->
+  <div class="chat-widget">
+    <div class="chat-button">
+      <i class="fas fa-comments"></i>
+    </div>
+    <div class="chat-container">
+      <div class="chat-header">
+        <h3>צ'אט תמיכה</h3>
+        <button class="close-chat"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="chat-messages">
+        <div class="message support">
+          <div class="message-content">שלום! כיצד אוכל לעזור לך היום?</div>
+          <div class="message-time">עכשיו</div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="הקלד הודעה..." id="chatInput">
+        <button class="send-message"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- סעיף צור קשר -->
+  <section id="contact" class="contact-section">
+    <div class="section-header">
+      <h2>צור <span class="gradient-text">קשר</span></h2>
+      <p>יש לך שאלות? אנחנו כאן בשבילך</p>
+    </div>
+    <div class="contact-container">
+      <div class="contact-info">
+        <div class="info-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <h3>כתובת</h3>
+            <p>באר יעקב</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-phone"></i>
+          <div>
+            <h3>טלפון</h3>
+            <p>0555545821</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <h3>אימייל</h3>
+            <p>websites3d@gmail.com</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-clock"></i>
+          <div>
+            <h3>שעות פעילות</h3>
+            <p>א'-ה': 9:00-18:00, ו': 9:00-13:00</p>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <form id="contactForm">
+          <div class="form-group">
+            <input type="text" id="name" name="name" placeholder="שם מלא" required>
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" name="email" placeholder="אימייל" required>
+          </div>
+          <div class="form-group">
+            <input type="tel" id="phone" name="phone" placeholder="טלפון">
+          </div>
+          <div class="form-group">
+            <select id="subject" name="subject">
+              <option value="" disabled selected>נושא הפנייה</option>
+              <option value="general">שאלה כללית</option>
+              <option value="support">תמיכה טכנית</option>
+              <option value="purchase">רכישת אתר</option>
+              <option value="custom">אתר מותאם אישית</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <textarea id="message" name="message" placeholder="הודעה" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">שלח הודעה</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- פוטר -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <span class="logo-text">Web<span class="accent">Verse</span></span>
+        </div>
+        <p>אנחנו מספקים אתרים מוכנים באיכות גבוהה לכל סוגי העסקים והפרויקטים.</p>
+        <div class="social-links">
+          <a href="#" aria-label="פייסבוק"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="אינסטגרם"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="טוויטר"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="לינקדאין"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>קטגוריות</h3>
+        <ul>
+          <li><a href="#">אתרי עסקים</a></li>
+          <li><a href="#">חנויות אונליין</a></li>
+          <li><a href="#">תיקי עבודות</a></li>
+          <li><a href="#">בלוגים</a></li>
+          <li><a href="#">דפי נחיתה</a></li>
+          <li><a href="#">מסעדות</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>קישורים מהירים</h3>
+        <ul>
+          <li><a href="#">אודות</a></li>
+          <li><a href="#">שירותים</a></li>
+          <li><a href="#">מחירון</a></li>
+          <li><a href="#">בלוג</a></li>
+          <li><a href="#">צור קשר</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>צור קשר</h3>
+        <ul class="contact-info">
+          <li><i class="fas fa-map-marker-alt"></i> באר יעקב</li>
+          <li><i class="fas fa-phone"></i> 0555545821</li>
+          <li><i class="fas fa-envelope"></i> websites3d@gmail.com</li>
+        </ul>
+        <form class="newsletter-form">
+          <input type="email" placeholder="הירשם לניוזלטר">
+          <button type="submit"><i class="fas fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p> 2025 WebVerse. כל הזכויות שמורות.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
