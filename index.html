@@ -93,18 +93,17 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         
-        /* כפתורי החלפת שפה */
-        .language-switcher {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 1000;
+        /* כפתורי החלפת שפה במיקום חדש - למעלה */
+        .language-switcher-top {
+            position: relative;
+            width: 100%;
             display: flex;
+            justify-content: center;
             gap: 8px;
-            background-color: rgba(255, 255, 255, 0.25);
-            border-radius: 30px;
-            padding: 8px 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 40, 80, 0.7);
+            padding: 8px 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
         .lang-btn {
             background: linear-gradient(45deg, #0066bb, #0099dd);
@@ -689,6 +688,12 @@
                       <p>VIPO offers smart import services from China: supplier sourcing, samples, shipping, quality control, taxes and customs clearance.</p>
                       <p>Personal service for every business - office in China, direct contact with manufacturers.</p>
                     `;
+                } else if (lang === 'zh') {
+                    seoContent.innerHTML = `
+                      <h2>从中国进口到以色列的业务</h2>
+                      <p>VIPO提供智能进口服务：供应商采购、样品、运输、质量控制、税收和清关。</p>
+                      <p>为每个企业提供个性化服务 - 中国办事处，直接联系制造商。</p>
+                    `;
                 } else {
                     seoContent.innerHTML = `
                       <h2>יבוא מסין לעסקים בישראל</h2>
@@ -709,6 +714,8 @@
 
         // מחכה עד שהדף נטען במלואו, ואז מבצע אתחול
         document.addEventListener("DOMContentLoaded", function () {
+            console.log('DOM fully loaded. Initializing site with language:', currentLang);
+            
             // מחזיר לראש הדף
             setTimeout(() => {
                 window.scrollTo(0, 0);
@@ -717,12 +724,23 @@
             // אתחול כל האלמנטים באתר שהם טקסט עם המחלקה translatable ומפתח תרגום
             initializeAllElements();
             
-            // אתחול השפה לפי הפרמטר ב-URL
-            switchLanguage(currentLang);
+            // הצגת כפתור השפה הפעיל
+            document.getElementById(currentLang + '-btn').classList.add('active');
+
+            // אם צריך לרענן את הדף לפי הפרמטר מה-URL, יש מקום להפעיל את הפונקציה
+            // אחרת, אפשר רק לאתחל את התרגום של האלמנטים ללא רענון מלא
+            if (window.location.search.includes('lang=')) {
+                console.log('URL already contains language parameter. Updating content without refresh.');
+                updateAllTranslations(currentLang);
+            } else {
+                console.log('URL does not contain language parameter. Initializing language.');
+                switchLanguage(currentLang);
+            }
         });
         
         // פונקציה שמוסיפה אוטומטית את המחלקה translatable ומפתח תרגום לאלמנטים
         function initializeAllElements() {
+            console.log('Initializing translatable elements...');
             // מילון של אלמנטים ומפתחות התרגום שלהם
             const elementMappings = [
                 // כותרות וטקסטים בסיסיים
@@ -749,34 +767,112 @@
                 { selector: '.contact-form .submit-btn', key: 'contact.submitButton' }
             ];
             
+            let translatedElementsCount = 0;
+            
             // הוספת המחלקה translatable ומפתח תרגום לכל האלמנטים
             elementMappings.forEach(mapping => {
-                const elements = document.querySelectorAll(mapping.selector);
-                elements.forEach(element => {
-                    // בדוק אם צריך להתאים לתנאי מסוים
-                    if (mapping.matches) {
-                        // אם האלמנט מכיל את הטקסט או את ה-ID שצריך להתאים
-                        if (!element.textContent.includes(mapping.matches) && 
-                            !element.id.includes(mapping.matches) && 
-                            !(element.onclick && element.onclick.toString().includes(mapping.matches))) {
-                            return;
+                try {
+                    const elements = document.querySelectorAll(mapping.selector);
+                    if (elements.length === 0) {
+                        console.log(`Warning: No elements found for selector ${mapping.selector}`);
+                        return;
+                    }
+                    
+                    elements.forEach(element => {
+                        // בדוק אם צריך להתאים לתנאי מסוים
+                        if (mapping.matches) {
+                            // אם האלמנט מכיל את הטקסט או את ה-ID שצריך להתאים
+                            if (!element.textContent.includes(mapping.matches) && 
+                                !element.id.includes(mapping.matches) && 
+                                !(element.onclick && element.onclick.toString().includes(mapping.matches))) {
+                                return;
+                            }
+                        }
+                        
+                        // הוסף את המחלקה translatable ומפתח תרגום
+                        element.classList.add('translatable');
+                        element.setAttribute('data-key', mapping.key);
+                        if (mapping.html) {
+                            element.setAttribute('data-html', 'true');
+                        }
+                        translatedElementsCount++;
+                    });
+                } catch (error) {
+                    console.error(`Error processing selector ${mapping.selector}:`, error);
+                }
+            });
+            
+            console.log(`Initialized ${translatedElementsCount} translatable elements`);
+        }
+        
+        // פונקציה לעדכון כל התרגומים ללא רענון הדף
+        function updateAllTranslations(lang) {
+            console.log(`Updating all translations to ${lang}`);
+            
+            // שינוי כיווניות הדף
+            const htmlElement = document.getElementById('htmlRoot');
+            if (lang === 'he') {
+                htmlElement.setAttribute('dir', 'rtl');
+                htmlElement.setAttribute('lang', 'he');
+            } else {
+                htmlElement.setAttribute('dir', 'ltr');
+                htmlElement.setAttribute('lang', lang);
+            }
+
+            // עדכון כותרת ותיאור
+            try {
+                document.title = translations[lang].seo.title;
+                document.querySelector('meta[name="description"]').setAttribute('content', translations[lang].seo.description);
+            } catch (error) {
+                console.error('Error updating meta tags for language:', lang, error);
+            }
+            
+            // עדכון כל האלמנטים המתורגמים
+            let updatedElementsCount = 0;
+            
+            document.querySelectorAll('.translatable').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (key) {
+                    const keyParts = key.split('.');
+                    let value = translations[lang];
+                    
+                    // שליפת הערך מהמפתח המדורג
+                    for (const part of keyParts) {
+                        if (value && value[part]) {
+                            value = value[part];
+                        } else {
+                            console.warn(`Translation key ${key} missing for language ${lang}`); 
+                            value = null;
+                            break;
                         }
                     }
                     
-                    // הוסף את המחלקה translatable ומפתח תרגום
-                    element.classList.add('translatable');
-                    element.setAttribute('data-key', mapping.key);
-                    if (mapping.html) {
-                        element.setAttribute('data-html', 'true');
+                    // הצגת התרגום
+                    if (value !== null) {
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.setAttribute('placeholder', value);
+                        } else if (element.hasAttribute('data-html')) {
+                            element.innerHTML = value;
+                        } else {
+                            element.textContent = value;
+                        }
+                        updatedElementsCount++;
                     }
-                });
+                }
             });
+            
+            // עדכון כפתורי השפה
+            document.getElementById('he-btn').classList.toggle('active', lang === 'he');
+            document.getElementById('en-btn').classList.toggle('active', lang === 'en');
+            document.getElementById('zh-btn').classList.toggle('active', lang === 'zh');
+            
+            console.log(`Updated ${updatedElementsCount} translated elements to ${lang}`);
         }
     </script>
 </head>
 <body>
-    <!-- מתג החלפת שפה -->    
-    <div class="language-switcher">
+    <!-- מתג החלפת שפה במיקום חדש - בראש העמוד -->    
+    <div class="language-switcher-top">
         <a href="?lang=he" class="lang-btn" id="he-btn">עברית</a>
         <a href="?lang=en" class="lang-btn" id="en-btn">English</a>
         <a href="?lang=zh" class="lang-btn" id="zh-btn">中文</a>
