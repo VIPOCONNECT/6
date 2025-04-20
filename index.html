@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl" itemscope itemtype="https://schema.org/WebPage">
+<html lang="he" dir="rtl" itemscope itemtype="https://schema.org/WebPage" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -92,26 +92,695 @@
             color: #ffcc00;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
+        
+        /* כפתורי החלפת שפה */
+        .language-switcher {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 30px;
+            padding: 8px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .lang-btn {
+            background: linear-gradient(45deg, #0066bb, #0099dd);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 6px 15px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .lang-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #0088cc, #00aaff);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .lang-btn.active {
+            background: linear-gradient(45deg, #00aaff, #33ccff);
+            border-color: white;
+            box-shadow: 0 0 12px rgba(100, 200, 255, 0.6);
+        }
+
+        /* התאמה למצב LTR (אנגלית) */
+        html[dir="ltr"] .language-switcher {
+            right: auto;
+            left: 20px;
+        }
     </style>
     
+    <!-- תמיכה רב-לשונית באתר - עברית, אנגלית וסינית -->
     <script>
-        (function() {
-            // כאשר הדף נטען מחדש או נסגר, תמיד נחזיר אותו לראש העמוד
-            window.onbeforeunload = function () {
-                window.scrollTo(0, 0);
-            };
+        // אובייקט התרגומים - מכיל את כל הטקסטים באתר בעברית, אנגלית וסינית
+        const translations = {
+            // תרגומים בעברית
+            he: {
+                // תגיות מטא
+                meta: {
+                    title: "יבוא מסין | שירותי יבוא חכם מסין לעסקים | VIPO",
+                    description: "VIPO מתמחים ביבוא מסין לעסקים – איתור מוצרים, בדיקת ספקים, משלוחים, עמילות מכס וביטחון לכסף. שירות יבוא חכם מסין מא' ועד ת'.",
+                },
+                // ממשק משתמש
+                ui: {
+                    langSwitcher: "English",
+                    whatsapp: "צור קשר בוואטסאפ",
+                    whatsappIcon: "אייקון וואטסאפ",
+                    catalogButton: "📂 לקטלוגים",
+                    closeCatalog: "סגור"
+                },
+                // כותרת
+                header: {
+                    slogan: "פתרונות יבוא מתקדמים"
+                },
+                // מבוא
+                intro: {
+                    title: "יבוא חכם – הצלחה בטוחה!",
+                    paragraph1: "חברת <strong>VIPO</strong> מספקת שירותי ייבוא בהתאמה אישית שיחסכו לך זמן וכסף.<br>חברתנו מנגישה את אפשרות היבוא מול מפעלים מובילים בעולם, התהליך מהיר ופשוט, הליווי אישי ומותאם לפי צורך, הלקוח שלנו נהנה מהנגשה למוצרים טובים ובמחירים משתלמים.",
+                    highlight: "📦 איתנו זה אפשרי!"
+                },
+                // קטלוג
+                catalog: {
+                    title: "קטלוגים",
+                    furniture: "ריהוט",
+                    spa: "ספא",
+                    businessEquipment: "ציוד לעסקים",
+                    outdoorScreens: "מסכי חוץ",
+                    ledScreens: "מסכי לד",
+                    gardenFurniture: "ריהוט גן",
+                    syntheticGrass: "דשא סינתטי",
+                    houseShade: "סכך לבית",
+                    covering: "חיפויים",
+                    woodCovering: "חיפוי דמוי עץ",
+                    exteriorCovering: "חיפוי חוץ",
+                    mobileStructures: "מבנים ניידים",
+                    igloo: "איגלו",
+                    vacationUnits: "יחידות נופש"
+                },
+                // שירותים
+                services: {
+                    title: "השירותים שלנו",
+                    subtitle: "למה כדאי לייבא דרכנו?",
+                    point1Title: "איתור ספקים",
+                    point1Desc: "אנו מאתרים עבורך את הספקים האיכותיים ביותר בעולם במחירים התחרותיים ביותר.",
+                    point2Title: "התנהלות מול ספקים",
+                    point2Desc: "אנו מנהלים את כל התקשורת והמשא ומתן מול הספקים בחו\"ל בשפתם.",
+                    point3Title: "שילוח ולוגיסטיקה",
+                    point3Desc: "אנו מטפלים בכל היבטי השילוח, ההובלה והמכס עבור המוצרים שלך.",
+                    point4Title: "בדיקת איכות",
+                    point4Desc: "אנו מבצעים בדיקות איכות מקיפות למוצרים לפני שילוחם לישראל.",
+                    point5Title: "ייעוץ עסקי",
+                    point5Desc: "אנו מספקים ייעוץ מקצועי לפיתוח והרחבת עסקים באמצעות יבוא.",
+                    point6Title: "ליווי מתמשך",
+                    point6Desc: "אנו מלווים את הלקוחות שלנו לאורך כל התהליך ומספקים תמיכה מתמשכת."
+                },
+                // למה לבחור בנו
+                whyUs: {
+                    title: "למה לבחור ב-VIPO?",
+                    saveTime: "חיסכון בזמן",
+                    saveTimeDesc: "נחסוך לך את החיפוש המייגע אחר ספקים אמינים ואת ההתמודדות עם פערי שפה ותרבות.",
+                    saveMoney: "חיסכון בכסף",
+                    saveMoneyDesc: "המחירים שנשיג עבורך יהיו תחרותיים בהרבה ממה שתוכל להשיג בעצמך, גם לאחר הוספת העמלה שלנו.",
+                    safety: "ביטחון ושקט נפשי",
+                    safetyDesc: "אנו מטפלים בכל הסיכונים ומבטיחים שהכסף שלך משולם רק כאשר המוצרים עומדים בציפיות שלך.",
+                    expertise: "מומחיות וניסיון",
+                    expertiseDesc: "צוות המומחים שלנו מביא עמו שנים רבות של ניסיון בתחום היבוא והסחר הבינלאומי.",
+                    timeSaving: "חיסכון זמן",
+                    timeSavingDesc: "אנו מטפלים בכל הפרטים הטכניים והלוגיסטיים, מה שמאפשר לך להתמקד בניהול העסק שלך.",
+                    savings: "חיסכון כספי משמעותי",
+                    savingsDesc: "הקשרים הישירים שלנו עם יצרנים וספקים מאפשרים לנו להשיג מחירים תחרותיים במיוחד.",
+                    globalAccess: "נגישות גלובלית",
+                    globalAccessDesc: "הקשרים שלנו מתפרשים בכל רחבי העולם, מה שמאפשר לנו לאתר את המוצרים הטובים ביותר מכל מקום."
+                },
+                // לקוחות מספרים
+                testimonials: {
+                    title: "לקוחות מספרים",
+                    shareExperience: "שתף את החוויה שלך",
+                    quote1: "\"חיפשתי ספק למיטות, VIPO איתרו לי מפעל מדהים עם מחיר חצי מהארץ – הגעתי לישראל עם מכולה תוך חודשיים!\"",
+                    author1: "אורית",
+                    business1: "חנות ריהוט",
+                    quote2: "\"שירות מדויק, אמין ומהיר. הדוגמה נבדקה עבורי, ראיתי הכל בווידאו, והרגשתי שאני שולט בתהליך.\"",
+                    author2: "תומר",
+                    business2: "ציוד לעסקים",
+                    quote3: "\"ייבאתי מוצרים לחנות שלי בפעם הראשונה בעזרת VIPO. הם טיפלו בכל התהליך מא\' ועד ת\' וחסכו לי המון כסף וכאבי ראש.\"",
+                    author3: "רונית",
+                    business3: "עיצוב הבית"
+                },
+                // כך זה עובד - היבוא בשלבים
+                process: {
+                    title: "כך זה עובד – היבוא בשלבים",
+                    step1Title: "1. איתור מוצר",
+                    step1Desc: "נאתר את המוצר המתאים לפי דרישה – כולל ניתוח שוק וספקים פוטנציאליים",
+                    step2Title: "2. בדיקת ספקים",
+                    step2Desc: "בדיקת רקע, חוות דעת, תקנים ואישור מפעל",
+                    step3Title: "3. דוגמאות",
+                    step3Desc: "הזמנת דוגמה למשרד בסין, בדיקה וצילום Live",
+                    step4Title: "4. בדיקת איכות",
+                    step4Desc: "צוות בקרת איכות מבצע בדיקה טרם שילוח",
+                    step5Title: "5. שילוח ולוגיסטיקה",
+                    step5Desc: "ניהול משלוח מלא כולל עמילות מכס ואספקה",
+                    step6Title: "6. ביטחון לכסף",
+                    step6Desc: "תשלומים מדורגים, שקיפות מלאה וליווי עד קבלת הסחורה"
+                },
+                // טופס צור קשר
+                contact: {
+                    title: "צור קשר",
+                    namePlaceholder: "שם מלא",
+                    phonePlaceholder: "טלפון",
+                    emailPlaceholder: "אימייל",
+                    subjectPlaceholder: "נושא הפנייה",
+                    messagePlaceholder: "הודעה",
+                    submitButton: "שלח הודעה",
+                    generalInquiry: "פניה כללית",
+                },
+                // פוטר
+                footer: {
+                    quickContact: "יצירת קשר מהיר",
+                    phone: "טלפון",
+                    whatsapp: "וואטסאפ",
+                    email: "אימייל",
+                    address: "כתובת",
+                    addressValue: "רחוב היצירה 13, רעננה",
+                    quickLinks: "קישורים מהירים",
+                    home: "דף הבית",
+                    services: "השירותים שלנו",
+                    contact: "צור קשר"
+                }
+            },
+            // תרגומים באנגלית
+            en: {
+                // תגיות מטא
+                seo: {
+                    title: "Import from China | Smart Import Services for Businesses | VIPO",
+                    description: "VIPO specializes in imports from China for businesses - product sourcing, supplier verification, shipping, customs clearance, and financial security. Complete import service from A to Z.",
+                },
+                // ממשק משתמש
+                ui: {
+                    langSwitcher: "עברית",
+                    whatsapp: "Contact via WhatsApp",
+                    whatsappIcon: "WhatsApp Icon",
+                    catalogButton: "📂 Catalogs",
+                    closeCatalog: "Close"
+                },
+                // כותרת
+                header: {
+                    slogan: "Advanced Import Solutions"
+                },
+                // מבוא
+                intro: {
+                    title: "Smart Import - Guaranteed Success!",
+                    paragraph1: "<strong>VIPO</strong> provides personalized import services that save you time and money.<br>Our company facilitates importing from leading manufacturers worldwide. The process is fast and simple, with personalized guidance tailored to your needs. Our clients enjoy access to quality products at competitive prices.",
+                    highlight: "📦 With us, it's possible!"
+                },
+                // קטלוג
+                catalog: {
+                    title: "Catalogs",
+                    furniture: "Furniture",
+                    spa: "Spa",
+                    businessEquipment: "Business Equipment",
+                    outdoorScreens: "Outdoor Screens",
+                    ledScreens: "LED Screens",
+                    gardenFurniture: "Garden Furniture",
+                    syntheticGrass: "Synthetic Grass",
+                    houseShade: "House Shade",
+                    covering: "Coverings",
+                    woodCovering: "Wood-like Covering",
+                    exteriorCovering: "Exterior Covering",
+                    mobileStructures: "Mobile Structures",
+                    igloo: "Igloo",
+                    vacationUnits: "Vacation Units"
+                },
+                // שירותים
+                services: {
+                    title: "Our Services",
+                    subtitle: "Why Import Through Us?",
+                    point1Title: "Supplier Sourcing",
+                    point1Desc: "We locate the highest quality suppliers worldwide at the most competitive prices for you.",
+                    point2Title: "Supplier Communication",
+                    point2Desc: "We manage all communication and negotiation with overseas suppliers in their language.",
+                    point3Title: "Shipping & Logistics",
+                    point3Desc: "We handle all aspects of shipping, transportation, and customs for your products.",
+                    point4Title: "Quality Control",
+                    point4Desc: "We perform comprehensive quality checks on products before shipping them to Israel.",
+                    point5Title: "Business Consulting",
+                    point5Desc: "We provide professional consulting for developing and expanding businesses through imports.",
+                    point6Title: "Ongoing Support",
+                    point6Desc: "We accompany our clients throughout the process and provide ongoing support."
+                },
+                // למה לבחור בנו
+                whyUs: {
+                    title: "Why Choose VIPO?",
+                    point1: "Expertise in the Chinese Market",
+                    point2: "Direct Communication with Suppliers",
+                    point3: "Personal & Professional Service",
+                    point4: "Significant Cost Savings",
+                    expertise: "Expertise & Experience",
+                    expertiseDesc: "Our expert team brings years of experience in import and international trade.",
+                    timeSaving: "Time Saving",
+                    timeSavingDesc: "We handle all technical and logistical details, allowing you to focus on running your business.",
+                    savings: "Significant Cost Savings",
+                    savingsDesc: "Our direct connections with manufacturers and suppliers allow us to obtain highly competitive prices.",
+                    globalAccess: "Global Access",
+                    globalAccessDesc: "Our connections span the globe, allowing us to source the best products from anywhere."
+                },
+                // כך זה עובד - היבוא בשלבים
+                process: {
+                    title: "How It Works - Import Steps",
+                    step1Title: "1. Product Sourcing",
+                    step1Desc: "We find the right product according to requirements - including market analysis and potential suppliers",
+                    step2Title: "2. Supplier Verification",
+                    step2Desc: "Background checks, reviews, standards and factory approval",
+                    step3Title: "3. Samples",
+                    step3Desc: "Sample ordering to our office in China, inspection and Live video",
+                    step4Title: "4. Quality Control",
+                    step4Desc: "Quality control team performs pre-shipment inspection",
+                    step5Title: "5. Shipping & Logistics",
+                    step5Desc: "Full shipment management including customs clearance and delivery",
+                    step6Title: "6. Money Security",
+                    step6Desc: "Graduated payments, full transparency and support until receiving the goods"
+                },
+                // צור קשר
+                contact: {
+                    title: "Contact Us",
+                    info: "For personal consulting and more information, leave your details and we'll get back to you soon:",
+                    name: "Full Name",
+                    email: "Email",
+                    phone: "Phone",
+                    message: "Message",
+                    submit: "Send"
+                },
+                // לקוחות מספרים
+                testimonials: {
+                    title: "Client Testimonials",
+                    shareExperience: "Share Your Experience",
+                    quote1: "\"I was looking for a bed supplier, and VIPO found me an amazing factory with prices half of what I'd pay locally - I had a container shipped to Israel within two months!\"",
+                    author1: "Orit",
+                    business1: "Furniture Store",
+                    quote2: "\"The service was precise, reliable, and fast. The sample was checked for me, I saw everything via video, and felt in control of the process.\"",
+                    author2: "Tomer",
+                    business2: "Business Equipment",
+                    quote3: "\"I imported products for my store for the first time with VIPO. They handled the entire process from A to Z and saved me a lot of money and headaches.\"",
+                    author3: "Ronit",
+                    business3: "Home Design"
+                },
+                // פוטר
+                footer: {
+                    quickContact: "Quick Contact",
+                    phone: "Phone",
+                    whatsapp: "WhatsApp",
+                    email: "Email",
+                    address: "Address",
+                    addressValue: "13 Hayetzira St., Ra'anana",
+                    quickLinks: "Quick Links",
+                    home: "Home",
+                    services: "Our Services",
+                    contact: "Contact Us"
+                },
+                // קטלוגים
+                catalog: {
+                    title: "Catalogs",
+                    furniture: "Furniture",
+                    sofas: "Sofas",
+                    barChairs: "Bar Chairs",
+                    armchairs: "Armchairs & Sofas",
+                    luxurySofas1: "Luxury Sofas 1",
+                    luxurySofas2: "Luxury Sofas 2",
+                    beds: "Beds",
+                    spa: "Spa",
+                    swimmingCurrents: "Swimming Pool with Currents",
+                    jacuzzi: "Jacuzzi",
+                    massageChairs: "Massage Chairs",
+                    massageGlasses: "Massage Glasses",
+                    businessEquipment: "Business Equipment",
+                    outdoorScreens: "Outdoor Screens",
+                    ledScreens: "LED Screens",
+                    gardenFurniture: "Garden Furniture",
+                    syntheticGrass: "Synthetic Grass",
+                    houseShade: "House Shade",
+                    covering: "Coverings",
+                    woodCovering: "Wood-like Covering",
+                    exteriorCovering: "Exterior Covering",
+                    mobileStructures: "Mobile Structures",
+                    igloo: "Igloo",
+                    vacationUnits: "Vacation Units",
+                    structure: "Structure & Finishing",
+                    windowsGlassDoors: "Windows & Glass Doors",
+                    villa: "Villa",
+                    pergolas: "Pergolas",
+                    shade: "Shade",
+                    doors: "Doors",
+                    office: "Office Equipment",
+                    papers: "Papers",
+                    seaSport: "Water Sports",
+                    boats: "Boats",
+                    kidsAndBabies: "Kids & Babies",
+                    comingSoon: "Coming soon..."
+                }
+            },
+            zh: {
+                // SEO
+                seo: {
+                    title: "VIPO - 为您提供从中国进口的智能服务",
+                    description: "VIPO - 致力于提供专业的中国进口服务，使您的采购过程更加简单、安全和省钱。"
+                },
+                // כותרת
+                header: {
+                    slogan: "先进的进口解决方案"
+                },
+                // כותרת ראשית
+                hero: {
+                    mainTitle: "智能进口 - 保证成功",
+                    subTitle: "VIPO提供个性化的进口服务，为您节省时间和金钱。",
+                    companyDesc: "我们的公司促进从世界各地的领先制造商进口。流程快速简单，提供量身定制的个性化指导，满足您的需求。我们的客户可以享受到以有竞争力的价格获取高质量产品。",
+                    slogan: "有我们，一切皆有可能"
+                },
+                // מבוא
+                intro: {
+                    title: "智能进口 - 保证成功！",
+                    paragraph1: "<strong>VIPO</strong>公司提供定制化的进口服务，为您节省时间和金钱。<br>我们公司促进与全球领先制造商的进口业务，过程快速简单，提供量身定制的个性化指导，满足您的需求。我们的客户可以享受到以有竞争力的价格获取高质量产品。",
+                    highlight: "📦 有我们，一切皆有可能！"
+                },
+                // UI אלמנטים
+                ui: {
+                    languageSwitchButton: "中文",
+                    learnMore: "了解更多",
+                    catalogButton: "📂 目录",
+                    closeCatalog: "关闭",
+                    requestCatalog: "申请此目录"
+                },
+                // שירותים
+                services: {
+                    title: "我们的服务",
+                    point1Title: "寻找供应商",
+                    point1Desc: "我们为您寻找世界上最优质的供应商，以最具竞争力的价格。",
+                    point2Title: "供应商互动",
+                    point2Desc: "我们用当地语言管理与国外供应商的所有沟通和谈判。",
+                    point3Title: "质量控制",
+                    point3Desc: "我们的代表会亲临工厂检查您的产品和生产过程。",
+                    point4Title: "货运和物流",
+                    point4Desc: "我们处理物流链的所有环节，从工厂到您的仓库。",
+                    point5Title: "支付保障",
+                    point5Desc: "我们确保您的资金安全，只有当产品符合您的期望时才付款。",
+                    point6Title: "语言障碍消除",
+                    point6Desc: "我们克服语言障碍，确保所有信息准确传达。"
+                },
+                // למה לבחור בנו
+                whyUs: {
+                    title: "为什么选择VIPO？",
+                    saveTime: "节省时间",
+                    saveTimeDesc: "我们为您省去寻找可靠供应商的麻烦，以及克服语言和文化差异的挑战。",
+                    saveMoney: "节省资金",
+                    saveMoneyDesc: "即使加上我们的服务费，我们为您获取的价格也比您自己能获得的更具竞争力。",
+                    safety: "安心保障",
+                    safetyDesc: "我们处理所有风险，确保您的资金只在产品满足您期望时才支付。",
+                    expertise: "专业经验",
+                    expertiseDesc: "我们的专家团队带来多年的进口和国际贸易经验。",
+                    timeSaving: "节省时间",
+                    timeSavingDesc: "我们处理所有技术和物流细节，让您专注于经营自己的业务。",
+                    savings: "显著节约成本",
+                    savingsDesc: "我们与制造商和供应商的直接联系使我们能够获得特别优惠的价格。",
+                    globalAccess: "全球通达",
+                    globalAccessDesc: "我们的联系网遍布全球，使我们能够从任何地方采购最佳产品。"
+                },
+                // לקוחות מספרים
+                testimonials: {
+                    title: "客户评价",
+                    shareExperience: "分享您的体验",
+                    quote1: "\"我在寻找床具供应商，VIPO为我找到了一家惊人的工厂，价格只有当地的一半——两个月内我就收到了运往以色列的集装箱！\"",
+                    author1: "奥里特",
+                    business1: "家具店",
+                    quote2: "\"服务精准、可靠且快速。样品已为我检查，我通过视频看到了一切，感觉整个过程都在掌控中。\"",
+                    author2: "托默",
+                    business2: "商业设备",
+                    quote3: "\"我首次通过VIPO为我的商店进口产品。他们从头到尾处理了整个过程，为我节省了大量资金和麻烦。\"",
+                    author3: "罗尼特",
+                    business3: "家居设计"
+                },
+                // כך זה עובד - היבוא בשלבים
+                process: {
+                    title: "进口流程",
+                    step1Title: "1. 需求分析",
+                    step1Desc: "了解您的特定需求和规格",
+                    step2Title: "2. 市场研究",
+                    step2Desc: "寻找最佳供应商并获取报价",
+                    step3Title: "3. 样品验证",
+                    step3Desc: "订购样品并根据您的反馈进行调整",
+                    step4Title: "4. 质量控制",
+                    step4Desc: "质检团队执行装运前检查",
+                    step5Title: "5. 运输和物流",
+                    step5Desc: "全面的运输管理，包括清关和配送",
+                    step6Title: "6. 资金安全",
+                    step6Desc: "分阶段付款，完全透明，直到收到货物的全程支持"
+                },
+                // צור קשר
+                contact: {
+                    title: "联系我们",
+                    info: "如需个人咨询和更多信息，请留下您的详细信息，我们将尽快与您联系：",
+                    name: "全名",
+                    email: "电子邮件",
+                    phone: "电话",
+                    message: "留言",
+                    submit: "发送"
+                },
+                // פוטר
+                footer: {
+                    quickContact: "快速联系",
+                    phone: "电话",
+                    whatsapp: "WhatsApp",
+                    email: "电子邮件",
+                    address: "地址",
+                    addressValue: "以色列拉阿纳纳，哈耶兹拉街13号",
+                    quickLinks: "快速链接",
+                    home: "首页",
+                    services: "我们的服务",
+                    contact: "联系我们"
+                },
+                // קטלוגים
+                catalog: {
+                    title: "目录",
+                    furniture: "家具",
+                    sofas: "沙发",
+                    barChairs: "吧椅",
+                    armchairs: "扶手椅与沙发",
+                    luxurySofas1: "豪华沙发 1",
+                    luxurySofas2: "豪华沙发 2",
+                    beds: "床",
+                    spa: "水疗",
+                    swimmingCurrents: "游泳池设备",
+                    jacuzzi: "按摩浴缸",
+                    massageChairs: "按摩椅",
+                    massageGlasses: "按摩眼镜",
+                    businessEquipment: "商业设备",
+                    outdoorScreens: "户外屏幕",
+                    ledScreens: "LED屏幕",
+                    gardenFurniture: "花园家具",
+                    syntheticGrass: "人造草",
+                    houseShade: "房屋遮阳",
+                    covering: "覆盖物",
+                    woodCovering: "仿木覆盖物",
+                    exteriorCovering: "外部覆盖物",
+                    mobileStructures: "移动结构",
+                    igloo: "圆顶",
+                    vacationUnits: "度假单元",
+                    structure: "结构与装饰",
+                    windowsGlassDoors: "窗户和玻璃门",
+                    villa: "别墅",
+                    pergolas: "凉棚",
+                    shade: "遮阳篷",
+                    doors: "门",
+                    office: "办公设备",
+                    papers: "纸张",
+                    seaSport: "水上运动",
+                    boats: "船",
+                    kidsAndBabies: "儿童与婴儿",
+                    comingSoon: "即将推出...",
+                    productCount: "产品数量：",
+                    manufacturingCountries: "生产国家：",
+                    averageDeliveryTime: "平均交货时间："
+                }
+            }
+        };
+        let currentLang = 'he';
 
-            // מחכה עד שהדף נטען במלואו, ואז מחזיר לראש הדף
-            document.addEventListener("DOMContentLoaded", function () {
-                setTimeout(() => {
-                    window.scrollTo(0, 0);
-                }, 100); // מחכה 100ms כדי לוודא שהדף התייצב
+        // מחלץ את השפה מ-URL אם קיימת
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+        if (langParam === 'en' || langParam === 'zh') {
+            currentLang = langParam;
+        }
+
+        // פונקציה לשינוי השפה
+        function switchLanguage(lang) {
+            // עדכון השפה הנוכחית
+            currentLang = lang;
+            
+            // עדכון ה-URL
+            const url = new URL(window.location.href);
+            url.searchParams.set('lang', lang);
+            window.history.pushState({}, '', url);
+            
+            // שינוי כיווניות הדף
+            const htmlElement = document.getElementById('htmlRoot');
+            if (lang === 'he') {
+                htmlElement.setAttribute('dir', 'rtl');
+                htmlElement.setAttribute('lang', 'he');
+            } else {
+                htmlElement.setAttribute('dir', 'ltr');
+                htmlElement.setAttribute('lang', lang);
+            }
+
+            // עדכון כותרת ותיאור
+            try {
+                document.title = translations[lang].seo.title;
+                document.querySelector('meta[name="description"]').setAttribute('content', translations[lang].seo.description);
+            } catch (error) {
+                console.error('Error updating meta tags for language:', lang);
+            }
+            
+            // עדכון כל האלמנטים המתורגמים
+            document.querySelectorAll('.translatable').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (key) {
+                    const keyParts = key.split('.');
+                    let value = translations[lang];
+                    
+                    // שליפת הערך מהמפתח המדורג
+                    for (const part of keyParts) {
+                        if (value && value[part]) {
+                            value = value[part];
+                        } else {
+                            value = null;
+                            break;
+                        }
+                    }
+                    
+                    // הצגת התרגום
+                    if (value !== null) {
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.setAttribute('placeholder', value);
+                        } else if (element.hasAttribute('data-html')) {
+                            element.innerHTML = value;
+                        } else {
+                            element.textContent = value;
+                        }
+                    }
+                }
             });
+            
+            // עדכון כפתורי השפה
+            document.getElementById('he-btn').classList.toggle('active', lang === 'he');
+            document.getElementById('en-btn').classList.toggle('active', lang === 'en');
+            document.getElementById('zh-btn').classList.toggle('active', lang === 'zh');
+            
+            // עדכון תוכן SEO נסתר
+            const seoContent = document.querySelector('div[style="display:none;"]');
+            if (seoContent) {
+                if (lang === 'en') {
+                    seoContent.innerHTML = `
+                      <h2>Import from China for Businesses in Israel</h2>
+                      <p>VIPO offers smart import services from China: supplier sourcing, samples, shipping, quality control, taxes and customs clearance.</p>
+                      <p>Personal service for every business - office in China, direct contact with manufacturers.</p>
+                    `;
+                } else {
+                    seoContent.innerHTML = `
+                      <h2>יבוא מסין לעסקים בישראל</h2>
+                      <p>VIPO מציעה שירותי יבוא חכמים מסין: איתור ספקים, דוגמאות, שילוח, בדיקות איכות, מיסים ועמילות מכס.</p>
+                      <p>שירות אישי לכל עסק - משרד בסין, קשר ישיר עם יצרנים.</p>
+                    `;
+                }
+            }
+            
+            // רענון הדף כדי להחיל את השינויים
+            window.location.href = url.toString();
+        }
+        
+        // כאשר הדף נטען מחדש או נסגר, תמיד נחזיר אותו לראש העמוד
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0);
+        };
 
-        })();
+        // מחכה עד שהדף נטען במלואו, ואז מבצע אתחול
+        document.addEventListener("DOMContentLoaded", function () {
+            // מחזיר לראש הדף
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100); // מחכה 100ms כדי לוודא שהדף התייצב
+            
+            // אתחול כל האלמנטים באתר שהם טקסט עם המחלקה translatable ומפתח תרגום
+            initializeAllElements();
+            
+            // אתחול השפה לפי הפרמטר ב-URL
+            switchLanguage(currentLang);
+        });
+        
+        // פונקציה שמוסיפה אוטומטית את המחלקה translatable ומפתח תרגום לאלמנטים
+        function initializeAllElements() {
+            // מילון של אלמנטים ומפתחות התרגום שלהם
+            const elementMappings = [
+                // כותרות וטקסטים בסיסיים
+                { selector: '.intro-container h2', key: 'intro.title' },
+                { selector: '.intro-container p:first-of-type', key: 'intro.paragraph1', html: true },
+                { selector: '.intro-container .highlight-text', key: 'intro.highlight' },
+                
+                // סרגל צד קטלוגים - כל הכותרות והקישורים
+                { selector: '.sidebar-header h3', key: 'catalog.title' },
+                { selector: '.sidebar-header .close-sidebar', key: 'ui.closeCatalog' },
+                
+                // כותרות הקטגוריות בסרגל הצד
+                { selector: '.catalog-category h4', matches: 'furniture', key: 'catalog.furniture' },
+                { selector: '.catalog-category h4', matches: 'spa', key: 'catalog.spa' },
+                { selector: '.catalog-category h4', matches: 'lighting', key: 'catalog.lighting' },
+                
+                // פרטי תוכן נוספים באתר
+                { selector: 'footer .copyright', key: 'footer.copyright' },
+                { selector: 'footer .contact-info h3', key: 'footer.contactInfo' },
+                { selector: 'footer .working-hours', key: 'footer.hours' },
+                
+                // כפתורים וטפסים
+                { selector: '.contact-form h2', key: 'contact.title' },
+                { selector: '.contact-form .submit-btn', key: 'contact.submitButton' }
+            ];
+            
+            // הוספת המחלקה translatable ומפתח תרגום לכל האלמנטים
+            elementMappings.forEach(mapping => {
+                const elements = document.querySelectorAll(mapping.selector);
+                elements.forEach(element => {
+                    // בדוק אם צריך להתאים לתנאי מסוים
+                    if (mapping.matches) {
+                        // אם האלמנט מכיל את הטקסט או את ה-ID שצריך להתאים
+                        if (!element.textContent.includes(mapping.matches) && 
+                            !element.id.includes(mapping.matches) && 
+                            !(element.onclick && element.onclick.toString().includes(mapping.matches))) {
+                            return;
+                        }
+                    }
+                    
+                    // הוסף את המחלקה translatable ומפתח תרגום
+                    element.classList.add('translatable');
+                    element.setAttribute('data-key', mapping.key);
+                    if (mapping.html) {
+                        element.setAttribute('data-html', 'true');
+                    }
+                });
+            });
+        }
     </script>
 </head>
 <body>
+    <!-- מתג החלפת שפה -->    
+    <div class="language-switcher">
+        <a href="?lang=he" class="lang-btn" id="he-btn">עברית</a>
+        <a href="?lang=en" class="lang-btn" id="en-btn">English</a>
+        <a href="?lang=zh" class="lang-btn" id="zh-btn">中文</a>
+    </div>
     <!-- תוכן נסתר לקידום SEO -->
     <div style="display:none;">
       <h2>יבוא מסין לעסקים בישראל</h2>
@@ -121,9 +790,9 @@
       <p>Import services from China for Israeli businesses: sourcing, quality control, logistics, and customs.</p>
     </div>
     <!-- כפתור צף של וואטסאפ -->
-    <a href="https://wa.me/972587009938" class="whatsapp-float" target="_blank" aria-label="צור קשר בוואטסאפ" title="צור קשר בוואטסאפ">
+    <a href="https://wa.me/972587009938" class="whatsapp-float" target="_blank" aria-label="צור קשר בוואטסאפ" title="צור קשר בוואטסאפ" class="translatable" data-key="ui.whatsapp">
         <svg class="whatsapp-icon" viewBox="0 0 24 24" role="img" aria-labelledby="whatsappTitle">
-            <title id="whatsappTitle">אייקון וואטסאפ</title>
+            <title id="whatsappTitle" class="translatable" data-key="ui.whatsappIcon">אייקון וואטסאפ</title>
             <path fill="#fff" d="M12 0a12 12 0 00-10.6 17.64L0 24l6.46-1.39A12 12 0 1012 0zm5.51 15.73c-.23.66-1.33 1.3-1.82 1.38-.47.08-1.06.12-1.71-.11A10.79 10.79 0 017 13.57a8.36 8.36 0 01-2.29-3.57c-.24-.66-.03-1.25.05-1.41.12-.25.26-.39.35-.48.17-.18.36-.22.47-.22.11 0 .24 0 .35.01.11 0 .26-.04.41.31s.54 1.25.58 1.34a1.14 1.14 0 01.06 1.08 3.69 3.69 0 01-.55 1c-.08.1-.17.21-.07.41.09.2.42.69.91 1.12a7.45 7.45 0 001.23.9c.15.08.25.06.35-.05s.4-.46.51-.61.26-.13.44-.08 1.12.53 1.32.62.33.14.38.22.05.85-.17 1.5z"/>
         </svg>
     </a>
@@ -148,127 +817,125 @@
     <div class="container">
         <header>
             <h1 data-chinese="进口解决方案">VIPO</h1>
-            <p>פתרונות יבוא מתקדמים</p>
+            <p class="translatable" data-key="header.slogan" data-html="true">פתרונות יבוא מתקדמים</p>
         </header>
 
         <!-- קופסת פתיחה עם רקע חצי שקוף ואנימציה -->
         <div class="intro-container">
-            <h2> יבוא חכם – הצלחה בטוחה!</h2>
-            <p>
+            <h2 class="translatable" data-key="intro.title">יבוא חכם – הצלחה בטוחה!</h2>
+            <p class="translatable" data-key="intro.paragraph1" data-html="true">
                 חברת <strong>VIPO</strong> מספקת שירותי ייבוא בהתאמה אישית שיחסכו לך זמן וכסף.<br>
                 חברתנו מנגישה את אפשרות היבוא מול מפעלים מובילים בעולם, התהליך מהיר ופשוט,  
                 הליווי אישי ומותאם לפי צורך, הלקוח שלנו נהנה מהנגשה למוצרים טובים ובמחירים משתלמים.
             </p>
-            <p class="highlight-text">📦 איתנו זה אפשרי!</p>
+            <p class="highlight-text translatable" data-key="intro.highlight">📦 איתנו זה אפשרי!</p>
         </div>
 
         <!-- כפתור לפתיחת סרגל צד קטלוגים -->
         <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-            <button onclick="toggleSidebar()" style="background: linear-gradient(45deg, #0055aa, #0088cc); color: white; font-size: 16px; font-weight: bold; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                📂 לקטלוגים
-            </button>
+            <button onclick="toggleSidebar()" style="background: linear-gradient(45deg, #0055aa, #0088cc); color: white; font-size: 16px; font-weight: bold; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" class="translatable" data-key="ui.catalogButton">📂 לקטלוגים</button>
         </div>
 
         <!-- סרגל צד קטלוגים -->
         <div id="catalogSidebar" class="sidebar">
             <div class="sidebar-header">
-                <h3>קטלוגים</h3>
-                <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
+                <h3 class="translatable" data-key="catalog.title">קטלוגים</h3>
+                <button class="close-sidebar translatable" data-key="ui.closeCatalog" onclick="toggleSidebar()">&times;</button>
             </div>
             <div class="sidebar-content">
                 <!-- ריהוט -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('furniture')">ריהוט</h4>
+                    <h4 onclick="toggleCatalogMenu('furniture')" class="translatable" data-key="catalog.furniture">ריהוט</h4>
                     <div id="furniture" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/8Qyup" target="_blank">ספות</a>
-                        <a href="https://lp6.me/MZKP3" target="_blank">כיסאות בר</a>
-                        <a href="https://lp6.me/hUYAQ" target="_blank">כורסאות+ספות</a>
-                        <a href="https://lp6.me/snhha" target="_blank">ספות יוקרה 1</a>
-                        <a href="https://lp6.me/y0Xcx" target="_blank">ספות יוקרה 2</a>
-                        <a href="https://lp6.me/XjGWY" target="_blank">מיטות</a>
+                        <a href="https://lp6.me/8Qyup" target="_blank" class="translatable" data-key="catalog.sofas">ספות</a>
+                        <a href="https://lp6.me/MZKP3" target="_blank" class="translatable" data-key="catalog.barChairs">כיסאות בר</a>
+                        <a href="https://lp6.me/hUYAQ" target="_blank" class="translatable" data-key="catalog.armchairs">כורסאות+ספות</a>
+                        <a href="https://lp6.me/snhha" target="_blank" class="translatable" data-key="catalog.luxurySofas1">ספות יוקרה 1</a>
+                        <a href="https://lp6.me/y0Xcx" target="_blank" class="translatable" data-key="catalog.luxurySofas2">ספות יוקרה 2</a>
+                        <a href="https://lp6.me/XjGWY" target="_blank" class="translatable" data-key="catalog.beds">מיטות</a>
                     </div>
                 </div>
 
                 <!-- ספא -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('spa')">ספא</h4>
+                    <h4 onclick="toggleCatalogMenu('spa')" class="translatable" data-key="catalog.spa">ספא</h4>
                     <div id="spa" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/tdZzu" target="_blank">בריכת זרמים</a>
-                        <a href="https://lp6.me/sG6yQ" target="_blank">ג'קוזי</a>
-                        <a href="https://lp6.me/Af7eO" target="_blank">כורסאות עיסוי</a>
-                        <a href="https://lp6.me/sACMN" target="_blank">משקפי עיסוי</a>
+                        <a href="https://lp6.me/tdZzu" target="_blank" class="translatable" data-key="catalog.swimmingCurrents">בריכת זרמים</a>
+                        <a href="https://lp6.me/sG6yQ" target="_blank" class="translatable" data-key="catalog.jacuzzi">ג'קוזי</a>
+                        <a href="https://lp6.me/Af7eO" target="_blank" class="translatable" data-key="catalog.massageChairs">כורסאות עיסוי</a>
+                        <a href="https://lp6.me/sACMN" target="_blank" class="translatable" data-key="catalog.massageGlasses">משקפי עיסוי</a>
                     </div>
                 </div>
 
                 <!-- ציוד לעסקים -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('electrical')">ציוד לעסקים</h4>
+                    <h4 onclick="toggleCatalogMenu('electrical')" class="translatable" data-key="catalog.businessEquipment">ציוד לעסקים</h4>
                     <div id="electrical" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/uLv04" target="_blank">מסכי חוץ</a>
-                        <a href="https://lp6.me/sM8V1" target="_blank">מסכי לד</a>
+                        <a href="https://lp6.me/uLv04" target="_blank" class="translatable" data-key="catalog.outdoorScreens">מסכי חוץ</a>
+                        <a href="https://lp6.me/sM8V1" target="_blank" class="translatable" data-key="catalog.ledScreens">מסכי לד</a>
                     </div>
                 </div>
 
                 <!-- ריהוט גן -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('garden')">ריהוט גן</h4>
+                    <h4 onclick="toggleCatalogMenu('garden')" class="translatable" data-key="catalog.gardenFurniture">ריהוט גן</h4>
                     <div id="garden" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/Icq4b" target="_blank">דשא סינתטי</a>
-                        <a href="https://lp6.me/6Fmy1" target="_blank">סכך לבית</a>
+                        <a href="https://lp6.me/Icq4b" target="_blank" class="translatable" data-key="catalog.syntheticGrass">דשא סינתטי</a>
+                        <a href="https://lp6.me/6Fmy1" target="_blank" class="translatable" data-key="catalog.houseShade">סכך לבית</a>
                     </div>
                 </div>
 
                 <!-- חיפויים -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('covering')">חיפויים</h4>
+                    <h4 onclick="toggleCatalogMenu('covering')" class="translatable" data-key="catalog.covering">חיפויים</h4>
                     <div id="covering" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/UTYvj" target="_blank">חיפוי דמוי עץ</a>
-                        <a href="https://lp6.me/kXZgV" target="_blank">חיפוי חוץ</a>
+                        <a href="https://lp6.me/UTYvj" target="_blank" class="translatable" data-key="catalog.woodCovering">חיפוי דמוי עץ</a>
+                        <a href="https://lp6.me/kXZgV" target="_blank" class="translatable" data-key="catalog.exteriorCovering">חיפוי חוץ</a>
                     </div>
                 </div>
 
                 <!-- מבנים ניידים -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('mobile')">מבנים ניידים</h4>
+                    <h4 onclick="toggleCatalogMenu('mobile')" class="translatable" data-key="catalog.mobileStructures">מבנים ניידים</h4>
                     <div id="mobile" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/iNCOx" target="_blank">איגלו</a>
-                        <a href="https://lp6.me/Tsysy" target="_blank">יחידות נופש</a>
+                        <a href="https://lp6.me/iNCOx" target="_blank" class="translatable" data-key="catalog.igloo">איגלו</a>
+                        <a href="https://lp6.me/Tsysy" target="_blank" class="translatable" data-key="catalog.vacationUnits">יחידות נופש</a>
                     </div>
                 </div>
 
                 <!-- מבנה וגימור -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('structure')">מבנה וגימור</h4>
+                    <h4 onclick="toggleCatalogMenu('structure')" class="translatable" data-key="catalog.structure">מבנה וגימור</h4>
                     <div id="structure" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/oUghk" target="_blank">חלונות + דלתות זכוכית</a>
-                        <a href="https://lp6.me/Nl1ey" target="_blank">וילה</a>
-                        <a href="https://lp6.me/4Xrbg" target="_blank">פרגולות</a>
-                        <a href="https://lp6.me/VaSf6" target="_blank">סכך</a>
-                        <a href="https://lp6.me/KuSxh" target="_blank">דלתות</a>
+                        <a href="https://lp6.me/oUghk" target="_blank" class="translatable" data-key="catalog.windowsGlassDoors">חלונות + דלתות זכוכית</a>
+                        <a href="https://lp6.me/Nl1ey" target="_blank" class="translatable" data-key="catalog.villa">וילה</a>
+                        <a href="https://lp6.me/4Xrbg" target="_blank" class="translatable" data-key="catalog.pergolas">פרגולות</a>
+                        <a href="https://lp6.me/VaSf6" target="_blank" class="translatable" data-key="catalog.shade">סכך</a>
+                        <a href="https://lp6.me/KuSxh" target="_blank" class="translatable" data-key="catalog.doors">דלתות</a>
                     </div>
                 </div>
 
                 <!-- ציוד משרדי -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('office')">ציוד משרדי</h4>
+                    <h4 onclick="toggleCatalogMenu('office')" class="translatable" data-key="catalog.office">ציוד משרדי</h4>
                     <div id="office" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/aIcAa" target="_blank">דפים</a>
+                        <a href="https://lp6.me/aIcAa" target="_blank" class="translatable" data-key="catalog.papers">דפים</a>
                     </div>
                 </div>
 
                 <!-- ספורט ימי -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('sport')">ספורט ימי</h4>
+                    <h4 onclick="toggleCatalogMenu('sport')" class="translatable" data-key="catalog.seaSport">ספורט ימי</h4>
                     <div id="sport" class="catalog-items" style="display: none;">
-                        <a href="https://lp6.me/kd2BP" target="_blank">סירות</a>
+                        <a href="https://lp6.me/kd2BP" target="_blank" class="translatable" data-key="catalog.boats">סירות</a>
                     </div>
                 </div>
 
                 <!-- ילדים ותינוקות -->
                 <div class="catalog-category">
-                    <h4 onclick="toggleCatalogMenu('kids')">ילדים ותינוקות</h4>
+                    <h4 onclick="toggleCatalogMenu('kids')" class="translatable" data-key="catalog.kidsAndBabies">ילדים ותינוקות</h4>
                     <div id="kids" class="catalog-items" style="display: none;">
-                        <a href="#" target="_blank">בהקמה...</a>
+                        <a href="#" target="_blank" class="translatable" data-key="catalog.comingSoon">בהקמה...</a>
                     </div>
                 </div>
             </div>
@@ -285,79 +952,79 @@
                     <div id="catalogDescription"></div>
                     <div class="catalog-image" id="catalogImage"></div>
                     <div class="catalog-details">
-                        <p><strong>מספר מוצרים: </strong><span id="catalogProductCount"></span></p>
-                        <p><strong>מדינות ייצור: </strong><span id="catalogCountries"></span></p>
-                        <p><strong>זמן אספקה ממוצע: </strong><span id="catalogDeliveryTime"></span></p>
+                        <p><strong class="translatable" data-key="catalog.productCount">מספר מוצרים: </strong><span id="catalogProductCount"></span></p>
+                        <p><strong class="translatable" data-key="catalog.manufacturingCountries">מדינות ייצור: </strong><span id="catalogCountries"></span></p>
+                        <p><strong class="translatable" data-key="catalog.averageDeliveryTime">זמן אספקה ממוצע: </strong><span id="catalogDeliveryTime"></span></p>
                     </div>
-                    <button class="request-btn" onclick="requestCatalog()">בקש קטלוג זה</button>
+                    <button class="request-btn translatable" onclick="requestCatalog()" data-key="ui.requestCatalog">בקש קטלוג זה</button>
                 </div>
             </div>
         </div>
 
         <!-- אזור שירותים -->
         <section class="services" id="services" itemscope itemtype="https://schema.org/Service">
-            <h2><span class="chinese-icon" aria-hidden="true">&#x1F5FA;</span> <span itemprop="name">השירותים שלנו</span> <span class="chinese-icon" aria-hidden="true">&#x1F5FA;</span></h2>
+            <h2><span class="chinese-icon" aria-hidden="true">&#x1F5FA;</span> <span itemprop="name" class="translatable" data-key="services.title">השירותים שלנו</span> <span class="chinese-icon" aria-hidden="true">&#x1F5FA;</span></h2>
             <div class="services-container">
                 <div class="service-card" itemprop="hasOfferCatalog" itemscope itemtype="https://schema.org/OfferCatalog">
                     <div class="service-icon" aria-hidden="true" role="presentation">🔍</div>
-                    <h3 itemprop="name">איתור ספקים</h3>
-                    <p itemprop="description">אנו מאתרים עבורך את הספקים האיכותיים ביותר בעולם במחירים התחרותיים ביותר.</p>
+                    <h3 itemprop="name" class="translatable" data-key="services.point1Title">איתור ספקים</h3>
+                    <p itemprop="description" class="translatable" data-key="services.point1Desc">אנו מאתרים עבורך את הספקים האיכותיים ביותר בעולם במחירים התחרותיים ביותר.</p>
                 </div>
                 <div class="service-card" itemprop="hasOfferCatalog" itemscope itemtype="https://schema.org/OfferCatalog">
                     <div class="service-icon" aria-hidden="true" role="presentation">📝</div>
-                    <h3 itemprop="name">התנהלות מול ספקים</h3>
-                    <p itemprop="description">אנו מנהלים את כל התקשורת והמשא ומתן מול הספקים בחו"ל בשפתם.</p>
+                    <h3 itemprop="name" class="translatable" data-key="services.point2Title">התנהלות מול ספקים</h3>
+                    <p itemprop="description" class="translatable" data-key="services.point2Desc">אנו מנהלים את כל התקשורת והמשא ומתן מול הספקים בחו"ל בשפתם.</p>
                 </div>
                 <div class="service-card" itemprop="hasOfferCatalog" itemscope itemtype="https://schema.org/OfferCatalog">
-                    <div class="service-icon" aria-hidden="true" role="presentation">🚢</div>
-                    <h3 itemprop="name">שילוח ולוגיסטיקה</h3>
-                    <p itemprop="description">אנו מטפלים בכל היבטי השילוח, ההובלה והמכס עבור המוצרים שלך.</p>
+                    <div class="service-icon" aria-hidden="true" role="presentation">🚚</div>
+                    <h3 itemprop="name" class="translatable" data-key="services.point4Title">שילוח ולוגיסטיקה</h3>
+                    <p itemprop="description" class="translatable" data-key="services.point4Desc">אנו מטפלים בכל היבטי המשלוח, ההובלה והמכס עבור המוצרים שלך.</p>
                 </div>
                 <div class="service-card" itemprop="hasOfferCatalog" itemscope itemtype="https://schema.org/OfferCatalog">
                     <div class="service-icon" aria-hidden="true" role="presentation">📊</div>
-                    <h3 itemprop="name">בדיקת איכות</h3>
-                    <p itemprop="description">אנו מבצעים בדיקות איכות מקיפות למוצרים לפני שילוחם לישראל.</p>
+                    <h3 itemprop="name" class="translatable" data-key="services.point4Title">בדיקת איכות</h3>
+                    <p itemprop="description" class="translatable" data-key="services.point4Desc">אנו מבצעים בדיקות איכות מקיפות למוצרים לפני שילוחם לישראל.</p>
                 </div>
                 <div class="service-card" itemprop="hasOfferCatalog" itemscope itemtype="https://schema.org/OfferCatalog">
                     <div class="service-icon" aria-hidden="true" role="presentation">💼</div>
-                    <h3 itemprop="name">ייעוץ עסקי</h3>
-                    <p itemprop="description">אנו מספקים ייעוץ מקצועי לפיתוח והרחבת עסקים באמצעות יבוא.</p>
+                    <h3 itemprop="name" class="translatable" data-key="services.point5Title">ייעוץ עסקי</h3>
+                    <p itemprop="description" class="translatable" data-key="services.point5Desc">אנו מספקים ייעוץ מקצועי לפיתוח והרחבת עסקים באמצעות יבוא.</p>
                 </div>
                 <div class="service-card" itemprop="hasOfferCatalog" itemscope itemtype="https://schema.org/OfferCatalog">
                     <div class="service-icon" aria-hidden="true" role="presentation">🔄</div>
-                    <h3 itemprop="name">ליווי מתמשך</h3>
-                    <p itemprop="description">אנו מלווים את הלקוחות שלנו לאורך כל התהליך ומספקים תמיכה מתמשכת.</p>
+                    <h3 itemprop="name" class="translatable" data-key="services.point6Title">ליווי מתמשך</h3>
+                    <p itemprop="description" class="translatable" data-key="services.point6Desc">אנו מלווים את הלקוחות שלנו לאורך כל התהליך ומספקים תמיכה מתמשכת.</p>
                 </div>
             </div>
         </section>
 
         <!-- אזור כך זה עובד - היבוא בשלבים -->
         <section id="how-it-works" style="padding: 40px 20px; background: rgba(255, 255, 255, 0.1); border-radius: 15px; margin: 30px 0;">
-            <h2 style="text-align:center; font-size: 28px; margin-bottom: 30px;"><span class="chinese-icon">&#x1F4C8;</span> כך זה עובד – היבוא בשלבים <span class="chinese-icon">&#x1F4C8;</span></h2>
+            <h2 style="text-align:center; font-size: 28px; margin-bottom: 30px;"><span class="chinese-icon">&#x1F4C8;</span> <span class="translatable" data-key="process.title">כך זה עובד – היבוא בשלבים</span> <span class="chinese-icon">&#x1F4C8;</span></h2>
             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
                 <div style="flex: 1 1 200px; max-width: 250px; background: rgba(0, 85, 170, 0.2); padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <h3 style="color: #ffcc00; margin-bottom: 10px;">1. איתור מוצר</h3>
-                    <p>נאתר את המוצר המתאים לפי דרישה – כולל ניתוח שוק וספקים פוטנציאליים</p>
+                    <h3 style="color: #ffcc00; margin-bottom: 10px;" class="translatable" data-key="process.step1Title">1. איתור מוצר</h3>
+                    <p class="translatable" data-key="process.step1Desc">נאתר את המוצר המתאים לפי דרישה – כולל ניתוח שוק וספקים פוטנציאליים</p>
                 </div>
                 <div style="flex: 1 1 200px; max-width: 250px; background: rgba(0, 85, 170, 0.2); padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <h3 style="color: #ffcc00; margin-bottom: 10px;">2. בדיקת ספקים</h3>
-                    <p>בדיקת רקע, חוות דעת, תקנים ואישור מפעל</p>
+                    <h3 style="color: #ffcc00; margin-bottom: 10px;" class="translatable" data-key="process.step2Title">2. בדיקת ספקים</h3>
+                    <p class="translatable" data-key="process.step2Desc">בדיקת רקע, חוות דעת, תקנים ואישור מפעל</p>
                 </div>
                 <div style="flex: 1 1 200px; max-width: 250px; background: rgba(0, 85, 170, 0.2); padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <h3 style="color: #ffcc00; margin-bottom: 10px;">3. דוגמאות</h3>
-                    <p>הזמנת דוגמה למשרד בסין, בדיקה וצילום Live</p>
+                    <h3 style="color: #ffcc00; margin-bottom: 10px;" class="translatable" data-key="process.step3Title">3. דוגמאות</h3>
+                    <p class="translatable" data-key="process.step3Desc">הזמנת דוגמה למשרד בסין, בדיקה וצילום Live</p>
                 </div>
                 <div style="flex: 1 1 200px; max-width: 250px; background: rgba(0, 85, 170, 0.2); padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <h3 style="color: #ffcc00; margin-bottom: 10px;">4. בדיקת איכות</h3>
-                    <p>צוות בקרת איכות מבצע בדיקה טרם שילוח</p>
+                    <h3 style="color: #ffcc00; margin-bottom: 10px;" class="translatable" data-key="process.step4Title">4. בדיקת איכות</h3>
+                    <p class="translatable" data-key="process.step4Desc">צוות בקרת איכות מבצע בדיקה טרם שילוח</p>
                 </div>
                 <div style="flex: 1 1 200px; max-width: 250px; background: rgba(0, 85, 170, 0.2); padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <h3 style="color: #ffcc00; margin-bottom: 10px;">5. שילוח ולוגיסטיקה</h3>
-                    <p>ניהול משלוח מלא כולל עמילות מכס ואספקה</p>
+                    <h3 style="color: #ffcc00; margin-bottom: 10px;" class="translatable" data-key="process.step5Title">5. שילוח ולוגיסטיקה</h3>
+                    <p class="translatable" data-key="process.step5Desc">ניהול משלוח מלא כולל עמילות מכס ואספקה</p>
                 </div>
                 <div style="flex: 1 1 200px; max-width: 250px; background: rgba(0, 85, 170, 0.2); padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <h3 style="color: #ffcc00; margin-bottom: 10px;">6. ביטחון לכסף</h3>
-                    <p>תשלומים מדורגים, שקיפות מלאה וליווי עד קבלת הסחורה</p>
+                    <h3 style="color: #ffcc00; margin-bottom: 10px;" class="translatable" data-key="process.step6Title">6. ביטחון לכסף</h3>
+                    <p class="translatable" data-key="process.step6Desc">תשלומים מדורגים, שקיפות מלאה וליווי עד קבלת הסחורה</p>
                 </div>
             </div>
         </section>
@@ -366,34 +1033,34 @@
         <section class="benefits">
             <div class="benefits-container">
                 <div class="benefits-text">
-                    <h2 data-chinese="为什么选择我们" ><span class="chinese-icon">&#x1F3DB;</span> למה לבחור ב-VIPO? <span class="chinese-icon">&#x1F3DB;</span></h2>
+                    <h2 data-chinese="为什么选择我们" ><span class="chinese-icon">&#x1F3DB;</span> <span class="translatable" data-key="whyUs.title">למה לבחור ב-VIPO?</span> <span class="chinese-icon">&#x1F3DB;</span></h2>
                     <ul class="benefits-list">
                         <li>
                             <span class="benefit-icon">✔️</span>
                             <div class="benefit-content">
-                                <h3>מומחיות וניסיון</h3>
-                                <p>צוות המומחים שלנו מביא עמו שנים רבות של ניסיון בתחום היבוא והסחר הבינלאומי.</p>
+                                <h3 class="translatable" data-key="whyUs.expertise">מומחיות וניסיון</h3>
+                                <p class="translatable" data-key="whyUs.expertiseDesc">צוות המומחים שלנו מביא עמו שנים רבות של ניסיון בתחום היבוא והסחר הבינלאומי.</p>
                             </div>
                         </li>
                         <li>
                             <span class="benefit-icon">💰</span>
                             <div class="benefit-content">
-                                <h3>חיסכון כספי משמעותי</h3>
-                                <p>הקשרים הישירים שלנו עם יצרנים וספקים מאפשרים לנו להשיג מחירים תחרותיים במיוחד.</p>
+                                <h3 class="translatable" data-key="whyUs.savings">חיסכון כספי משמעותי</h3>
+                                <p class="translatable" data-key="whyUs.savingsDesc">הקשרים הישירים שלנו עם יצרנים וספקים מאפשרים לנו להשיג מחירים תחרותיים במיוחד.</p>
                             </div>
                         </li>
                         <li>
                             <span class="benefit-icon">🕐</span>
                             <div class="benefit-content">
-                                <h3>חיסכון זמן</h3>
-                                <p>אנו מטפלים בכל הפרטים הטכניים והלוגיסטיים, מה שמאפשר לך להתמקד בניהול העסק שלך.</p>
+                                <h3 class="translatable" data-key="whyUs.timeSaving">חיסכון זמן</h3>
+                                <p class="translatable" data-key="whyUs.timeSavingDesc">אנו מטפלים בכל הפרטים הטכניים והלוגיסטיים, מה שמאפשר לך להתמקד בניהול העסק שלך.</p>
                             </div>
                         </li>
                         <li>
                             <span class="benefit-icon">🌐</span>
                             <div class="benefit-content">
-                                <h3>נגישות גלובלית</h3>
-                                <p>הקשרים שלנו מתפרשים בכל רחבי העולם, מה שמאפשר לנו לאתר את המוצרים הטובים ביותר מכל מקום.</p>
+                                <h3 class="translatable" data-key="whyUs.globalAccess">נגישות גלובלית</h3>
+                                <p class="translatable" data-key="whyUs.globalAccessDesc">הקשרים שלנו מתפרשים בכל רחבי העולם, מה שמאפשר לנו לאתר את המוצרים הטובים ביותר מכל מקום.</p>
                             </div>
                         </li>
                     </ul>
@@ -408,19 +1075,19 @@
 
         <!-- אזור המלצות לקוחות -->
         <section id="testimonials" style="padding: 40px 20px; background: rgba(255, 255, 255, 0.1); border-radius: 15px; margin: 30px 0;" itemscope itemtype="https://schema.org/Review">
-            <h2 style="text-align:center; font-size: 28px; margin-bottom: 30px;"><span class="chinese-icon">&#x1F4AC;</span> לקוחות מספרים <span class="chinese-icon">&#x1F4AC;</span></h2>
+            <h2 style="text-align:center; font-size: 28px; margin-bottom: 30px;"><span class="chinese-icon">&#x1F4AC;</span> <span class="translatable" data-key="testimonials.title">לקוחות מספרים</span> <span class="chinese-icon">&#x1F4AC;</span></h2>
             <div style="text-align: center; margin: 20px auto 30px auto; max-width: 100%; padding: 0 15px;">
                 <a href="javascript:void(0)" onclick="shareExperience()" style="display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(45deg, #25D366, #128C7E); color: white; padding: 12px 25px; border-radius: 50px; font-size: 18px; font-weight: bold; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: all 0.3s; width: 100%; max-width: 300px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                     <svg style="width: 24px; height: 24px; margin-left: 8px;" viewBox="0 0 24 24">
                         <path fill="#fff" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
                     </svg>
-                    שתף את החוויה שלך
+                    <span class="translatable" data-key="testimonials.shareExperience">שתף את החוויה שלך</span>
                 </a>
             </div>
             <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 30px;">
                 <div style="max-width: 300px; background: rgba(0, 85, 170, 0.2); border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" itemprop="review" itemscope itemtype="https://schema.org/Review">
-                    <p style="font-style: italic; line-height: 1.6; margin-bottom: 15px;" itemprop="reviewBody">"חיפשתי ספק למיטות, VIPO איתרו לי מפעל מדהים עם מחיר חצי מהארץ – הגעתי לישראל עם מכולה תוך חודשיים!"</p>
-                    <strong style="color: #ffcc00;" itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">אורית</span>, חנות ריהוט</strong>
+                    <p style="font-style: italic; line-height: 1.6; margin-bottom: 15px;" itemprop="reviewBody" class="translatable" data-key="testimonials.quote1">"חיפשתי ספק למיטות, VIPO איתרו לי מפעל מדהים עם מחיר חצי מהארץ – הגעתי לישראל עם מכולה תוך חודשיים!"</p>
+                    <strong style="color: #ffcc00;" itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name" class="translatable" data-key="testimonials.author1">אורית</span>, <span class="translatable" data-key="testimonials.business1">חנות ריהוט</span></strong>
                     <meta itemprop="datePublished" content="2025-01-15">
                     <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating" style="display:none">
                         <meta itemprop="ratingValue" content="5">
@@ -428,8 +1095,8 @@
                     </div>
                 </div>
                 <div style="max-width: 300px; background: rgba(0, 85, 170, 0.2); border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" itemprop="review" itemscope itemtype="https://schema.org/Review">
-                    <p style="font-style: italic; line-height: 1.6; margin-bottom: 15px;" itemprop="reviewBody">"שירות מדויק, אמין ומהיר. הדוגמה נבדקה עבורי, ראיתי הכל בווידאו, והרגשתי שאני שולט בתהליך."</p>
-                    <strong style="color: #ffcc00;" itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">תומר</span>, ציוד לעסקים</strong>
+                    <p style="font-style: italic; line-height: 1.6; margin-bottom: 15px;" itemprop="reviewBody" class="translatable" data-key="testimonials.quote2">"שירות מדויק, אמין ומהיר. הדוגמה נבדקה עבורי, ראיתי הכל בווידאו, והרגשתי שאני שולט בתהליך."</p>
+                    <strong style="color: #ffcc00;" itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name" class="translatable" data-key="testimonials.author2">תומר</span>, <span class="translatable" data-key="testimonials.business2">ציוד לעסקים</span></strong>
                     <meta itemprop="datePublished" content="2025-02-20">
                     <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating" style="display:none">
                         <meta itemprop="ratingValue" content="5">
@@ -437,8 +1104,8 @@
                     </div>
                 </div>
                 <div style="max-width: 300px; background: rgba(0, 85, 170, 0.2); border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" itemprop="review" itemscope itemtype="https://schema.org/Review">
-                    <p style="font-style: italic; line-height: 1.6; margin-bottom: 15px;" itemprop="reviewBody">"ייבאתי מוצרים לחנות שלי בפעם הראשונה בעזרת VIPO. הם טיפלו בכל התהליך מא' ועד ת' וחסכו לי המון כסף וכאבי ראש."</p>
-                    <strong style="color: #ffcc00;" itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">רונית</span>, עיצוב הבית</strong>
+                    <p style="font-style: italic; line-height: 1.6; margin-bottom: 15px;" itemprop="reviewBody" class="translatable" data-key="testimonials.quote3">"ייבאתי מוצרים לחנות שלי בפעם הראשונה בעזרת VIPO. הם טיפלו בכל התהליך מא' ועד ת' וחסכו לי המון כסף וכאבי ראש."</p>
+                    <strong style="color: #ffcc00;" itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name" class="translatable" data-key="testimonials.author3">רונית</span>, <span class="translatable" data-key="testimonials.business3">עיצוב הבית</span></strong>
                     <meta itemprop="datePublished" content="2025-03-10">
                     <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating" style="display:none">
                         <meta itemprop="ratingValue" content="5">
@@ -448,61 +1115,50 @@
             </div>
         </section>
 
-        <!-- אזור צור קשר -->
+        <!-- Contact Section -->
         <section class="contact" id="contact">
-            <h2><span class="chinese-icon">&#x1F4E7;</span> צור קשר <span class="chinese-icon">&#x1F4E7;</span></h2>
+            <h2><span class="chinese-icon" aria-hidden="true">&#x260E;</span> <span class="translatable" data-key="contact.title">Contact Us</span> <span class="chinese-icon" aria-hidden="true">&#x260E;</span></h2>
             <div class="contact-form">
-                <form id="contactForm" onsubmit="sendWhatsApp(event)">
+                <form id="contact-form" action="#" method="post" class="contact-form">
                     <div class="form-group">
-                        <label for="name">שם מלא</label>
+                        <label for="name" class="translatable" data-key="contact.name">Full Name</label>
                         <input type="text" id="name" name="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">אימייל</label>
+                        <label for="email" class="translatable" data-key="contact.email">Email</label>
                         <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">טלפון</label>
+                        <label for="phone" class="translatable" data-key="contact.phone">Phone</label>
                         <input type="tel" id="phone" name="phone">
                     </div>
                     <div class="form-group">
-                        <label for="subject">נושא</label>
-                        <select id="subject" name="subject" required style="background-color: #f0f8ff; color: #003366; padding: 10px; border: 1px solid #0055aa; border-radius: 5px; width: 100%; font-size: 16px; -webkit-appearance: menulist; -moz-appearance: menulist; appearance: menulist;">
-                            <option value="" style="background-color: #f0f8ff; color: #003366;">-- בחר נושא --</option>
-                            <option value="ייבוא מוצרים" style="background-color: #f0f8ff; color: #003366;">ייבוא מוצרים</option>
-                            <option value="ייעוץ עסקי" style="background-color: #f0f8ff; color: #003366;">ייעוץ עסקי</option>
-                            <option value="שילוח ולוגיסטיקה" style="background-color: #f0f8ff; color: #003366;">שילוח ולוגיסטיקה</option>
-                            <option value="אחר" style="background-color: #f0f8ff; color: #003366;">אחר</option>
-                        </select>
+                        <label for="message" class="translatable" data-key="contact.message">Message</label>
+                        <textarea id="message" name="message" rows="4"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="message">הודעה</label>
-                        <textarea id="message" name="message" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">שלח הודעה לוואטסאפ</button>
+                    <button type="submit" class="submit-btn translatable" data-key="contact.submit">Send</button>
                 </form>
             </div>
         </section>
 
-        <!-- פוטר -->
+        <!-- Footer -->
         <footer>
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>אודות VIPO</h3>
-                    <p>חברת VIPO מתמחה בשירותי ייבוא מתקדמים ומספקת פתרונות מקיפים לעסקים ויזמים בישראל.</p>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <p class="translatable" data-key="contact.info">For personal consulting and more information, leave your details and we'll get back to you soon:</p>
                 </div>
                 <div class="footer-section">
-                    <h3>קשר מהיר</h3>
-                    <p>טלפון: <a href="tel:+972587009938" style="color: white; text-decoration: none;">058-7009938</a></p>
-                    <p>וואטסאפ: <a href="https://wa.me/972587009938" target="_blank" style="color: white; text-decoration: none;">058-7009938</a></p>
-                    <p>אימייל: info@vipo.co.il</p>
-                    <p>כתובת: רחוב היצירה 13, רעננה</p>
+                    <h3 class="translatable" data-key="footer.quickContact">Quick Contact</h3>
+                    <p><span class="translatable" data-key="footer.phone">Phone</span>: <a href="tel:+972587009938" style="color: white; text-decoration: none;">058-7009938</a></p>
+                    <p><span class="translatable" data-key="footer.whatsapp">WhatsApp</span>: <a href="https://wa.me/972587009938" target="_blank" style="color: white; text-decoration: none;">058-7009938</a></p>
+                    <p><span class="translatable" data-key="footer.email">Email</span>: info@vipo.co.il</p>
+                    <p><span class="translatable" data-key="footer.address">Address</span>: <span class="translatable" data-key="footer.addressValue">13 Hayetzira St., Ra'anana</span></p>
                 </div>
                 <div class="footer-section">
-                    <h3>קישורים מהירים</h3>
-                    <a href="#">דף הבית</a>
-                    <a href="#services">השירותים שלנו</a>
-                    <a href="#contact">צור קשר</a>
+                    <h3 class="translatable" data-key="footer.quickLinks">קישורים מהירים</h3>
+                    <a href="#" class="translatable" data-key="footer.home">דף הבית</a>
+                    <a href="#services" class="translatable" data-key="footer.services">השירותים שלנו</a>
+                    <a href="#contact" class="translatable" data-key="footer.contact">צור קשר</a>
                     <div class="social-icons" style="margin-top: 15px; display: flex; gap: 15px; justify-content: flex-start;">
                         <a href="#" aria-label="Facebook" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: linear-gradient(45deg, #3b5998, #4c6bba); border-radius: 50%; color: white; text-decoration: none; transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(59, 89, 152, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 5px rgba(0, 0, 0, 0.2)'">
                             <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24">
