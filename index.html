@@ -4629,6 +4629,28 @@ function toggleCatalogMenu(id) {
                     margin-top: 10px;
                 }
             }
+
+            /* --- iOS/Mobile Apple fix for contact form --- */
+            @media (max-width: 600px), (hover: none) and (pointer: coarse) {
+                .contact-form {
+                    background: linear-gradient(135deg, #eaf6ff 60%, #dbeafe 100%) !important;
+                    color: #222 !important;
+                    -webkit-backdrop-filter: none !important;
+                    backdrop-filter: none !important;
+                    border: 1px solid #b3d4fc;
+                    box-shadow: 0 4px 18px 0 rgba(31, 38, 135, 0.10);
+                }
+                .contact-form input,
+                .contact-form textarea,
+                .contact-form select {
+                    color: #222 !important;
+                    background: #f7f7f7 !important;
+                    border: 1px solid #bbb !important;
+                }
+                .contact-form label {
+                    color: #222 !important;
+                }
+            }
             
             .form-group {
                 margin-bottom: 20px;
