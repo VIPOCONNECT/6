@@ -476,32 +476,8 @@
         var sub = document.createElement("p");
         sub.appendChild(translatableSpan("header.slogan"));
 
-        var actions = document.createElement("div");
-        actions.className = "wow-cta-actions";
-
-        var wa = document.createElement("a");
-        wa.className = "wow-cta-btn wow-cta-wa wow-magnetic";
-        wa.href = "https://wa.me/972587009938";
-        wa.target = "_blank";
-        wa.rel = "noopener";
-        wa.setAttribute("aria-label", "WhatsApp");
-        wa.appendChild(iconEl("fab fa-whatsapp"));
-
-        var tel = document.createElement("a");
-        tel.className = "wow-cta-btn wow-magnetic";
-        tel.href = "tel:0587009938";
-        tel.setAttribute("aria-label", "058-7009938");
-        tel.appendChild(iconEl("fas fa-phone-alt"));
-        var num = document.createElement("span");
-        num.dir = "ltr";
-        num.textContent = "058-7009938";
-        tel.appendChild(num);
-
-        actions.appendChild(wa);
-        actions.appendChild(tel);
         inner.appendChild(title);
         inner.appendChild(sub);
-        inner.appendChild(actions);
         band.appendChild(inner);
         footer.parentNode.insertBefore(band, footer);
     }
