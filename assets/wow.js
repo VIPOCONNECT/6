@@ -538,6 +538,43 @@
         });
     }
 
+    /* ---------- Mobile first screen: hero + intro title above the action bar ---------- */
+    function initFold() {
+        var hero = document.querySelector(".container > header.wow-hero");
+        var bar = document.querySelector(".mobile-action-bar");
+        var intro = hero && hero.nextElementSibling;
+        while (intro && !intro.querySelector(".intro-title")) intro = intro.nextElementSibling;
+        var title = intro && intro.querySelector(".intro-title");
+        if (!hero || !bar || !title) return;
+        var root = document.documentElement;
+        var lastW = 0;
+
+        function fit(force) {
+            var w = window.innerWidth;
+            if (!force && w === lastW) return;
+            lastW = w;
+            if (w >= 900 || getComputedStyle(bar).display === "none") {
+                root.classList.remove("wow-fold");
+                return;
+            }
+            var heroTop = hero.getBoundingClientRect().top + window.scrollY;
+            var peek = title.getBoundingClientRect().bottom - intro.getBoundingClientRect().top + 14;
+            var h = Math.floor(window.innerHeight - heroTop - bar.offsetHeight - peek);
+            if (h < 300) {
+                root.classList.remove("wow-fold");
+                return;
+            }
+            root.style.setProperty("--wow-fold", h + "px");
+            root.classList.add("wow-fold");
+        }
+
+        fit(true);
+        window.addEventListener("resize", function () { fit(false); });
+        window.addEventListener("orientationchange", function () { setTimeout(function () { fit(true); }, 300); });
+        window.addEventListener("load", function () { fit(true); });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fit(true); });
+    }
+
     /* ---------- Hero wordmark ---------- */
     function initLogo() {
         var h1 = document.querySelector(".container > header .main-logo");
@@ -817,7 +854,7 @@
         var steps = [
             ["catalogs", initCatalogBrowser], ["logo", initLogo],
             ["nav", initNav], ["aurora", initAurora], ["marquee", initMarquee], ["globe", initGlobe],
-            ["benefits", initBenefitsPhoto], ["cta", initCta], ["form", initForm],
+            ["fold", initFold], ["benefits", initBenefitsPhoto], ["cta", initCta], ["form", initForm],
             ["reveal", initReveal], ["timeline", initTimeline], ["hover", initHover]
         ];
         steps.forEach(function (s) {
