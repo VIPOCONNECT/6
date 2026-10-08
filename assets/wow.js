@@ -408,7 +408,7 @@
         cta.type = "button";
         cta.className = "wow-nav-cta wow-magnetic";
         cta.appendChild(iconEl("fas fa-folder-open"));
-        cta.appendChild(translatableSpan("catalog.title"));
+        cta.appendChild(translatableSpan("ui.newCatalogButton"));
         cta.addEventListener("click", openCatalog);
 
         bar.insertBefore(nav, bar.firstChild);
@@ -479,13 +479,6 @@
         var actions = document.createElement("div");
         actions.className = "wow-cta-actions";
 
-        var primary = document.createElement("button");
-        primary.type = "button";
-        primary.className = "wow-cta-primary wow-magnetic";
-        primary.appendChild(iconEl("fas fa-folder-open"));
-        primary.appendChild(translatableSpan("ui.newCatalogButton"));
-        primary.addEventListener("click", openCatalog);
-
         var wa = document.createElement("a");
         wa.className = "wow-cta-btn wow-cta-wa wow-magnetic";
         wa.href = "https://wa.me/972587009938";
@@ -504,7 +497,6 @@
         num.textContent = "058-7009938";
         tel.appendChild(num);
 
-        actions.appendChild(primary);
         actions.appendChild(wa);
         actions.appendChild(tel);
         inner.appendChild(title);

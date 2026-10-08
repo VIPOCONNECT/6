@@ -1622,6 +1622,10 @@ html[lang="en"] .nfx-hero::after {
     to { opacity: 1; transform: none; }
 }
 
+.wow-hero > div:has(> #catalogBtn) {
+    display: none !important;
+}
+
 .wow-hero .catalog-button {
     background: linear-gradient(135deg, #f6d48d, #d9a94f) !important;
     color: #0b1220 !important;
