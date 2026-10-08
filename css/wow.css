@@ -1,0 +1,421 @@
+:root {
+    --wow-accent: var(--gold, var(--brass, #c9a65a));
+    --wow-glow: rgba(12, 35, 64, 0.10);
+    --wow-chip-bg: #ffffff;
+    --wow-chip-line: rgba(16, 24, 40, 0.08);
+    --wow-feature-bg: linear-gradient(145deg, #0c2340 0%, #16345c 100%);
+    --wow-feature-ink: #ffffff;
+    --wow-feature-muted: rgba(255, 255, 255, 0.72);
+}
+
+html[data-theme="dark"] {
+    --wow-glow: rgba(91, 140, 255, 0.22);
+    --wow-chip-bg: rgba(255, 255, 255, 0.04);
+    --wow-chip-line: rgba(255, 255, 255, 0.08);
+    --wow-feature-bg: linear-gradient(145deg, rgba(212, 178, 106, 0.22) 0%, rgba(212, 178, 106, 0.06) 100%);
+    --wow-feature-ink: #f4f6fb;
+    --wow-feature-muted: #c3cad8;
+}
+
+/* ===== Reveal on scroll ===== */
+.wow-js .wow-reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--wow-delay, 0ms);
+}
+
+.wow-js .wow-reveal.is-in {
+    opacity: 1;
+    transform: none;
+}
+
+/* ===== Hero with globe ===== */
+.wow-hero {
+    position: relative;
+}
+
+.wow-hero-visual {
+    position: relative;
+    pointer-events: none;
+}
+
+.wow-hero-visual::before {
+    content: "";
+    position: absolute;
+    inset: 8%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--wow-glow) 0%, transparent 70%);
+    filter: blur(20px);
+    z-index: 0;
+}
+
+.wow-hero-visual canvas {
+    position: relative;
+    z-index: 1;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.wow-hero-visual.wow-no-webgl {
+    display: none !important;
+}
+
+@media (min-width: 900px) {
+    .wow-hero {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: 1fr auto auto auto auto 1fr;
+        align-content: stretch;
+        align-items: center;
+        column-gap: 40px;
+        min-height: min(86vh, 760px);
+        padding: 40px 0 20px !important;
+        text-align: start !important;
+    }
+
+    .wow-hero > * {
+        grid-column: 1;
+    }
+
+    .wow-hero > .main-logo { grid-row: 2; }
+    .wow-hero > .gradient-separator { grid-row: 3; }
+    .wow-hero > .header-slogan { grid-row: 4; }
+    .wow-hero > div:not(.wow-hero-visual):not(.gradient-separator) { grid-row: 5; }
+
+    .wow-hero > .wow-hero-visual {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        max-width: 560px;
+        justify-self: center;
+    }
+
+    .wow-hero .main-logo {
+        font-size: clamp(5rem, 9vw, 8.5rem) !important;
+        letter-spacing: 0.06em !important;
+        line-height: 0.95 !important;
+        align-self: end;
+    }
+
+    .wow-hero .gradient-separator {
+        margin: 26px 0 20px !important;
+        width: 64px !important;
+    }
+
+    .wow-hero .header-slogan {
+        font-size: clamp(1.3rem, 2vw, 1.8rem) !important;
+        text-align: start !important;
+        margin: 0 0 32px !important;
+    }
+
+    .wow-hero > div:not(.wow-hero-visual):not(.gradient-separator) {
+        text-align: start !important;
+        margin: 0 !important;
+        align-self: start;
+    }
+
+    .services h2,
+    .benefits h2,
+    .testimonials-title,
+    .contact h2,
+    #how-it-works h2 {
+        font-size: clamp(2rem, 3.4vw, 2.8rem) !important;
+    }
+}
+
+@media (max-width: 899px) {
+    .wow-hero {
+        min-height: 0 !important;
+        padding-top: 8px !important;
+    }
+
+    .wow-hero > .wow-hero-visual {
+        order: -1;
+        align-self: center;
+        width: min(88vw, 360px);
+        aspect-ratio: 1 / 1;
+        margin: 0 auto -18px;
+    }
+}
+
+/* ===== Category marquee ===== */
+.wow-marquee {
+    position: relative;
+    direction: ltr;
+    overflow: hidden;
+    margin: 8px -18px 48px;
+    padding: 6px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.wow-marquee-track {
+    display: flex;
+    width: max-content;
+    direction: ltr;
+    animation: wow-marquee 45s linear infinite;
+}
+
+.wow-marquee:hover .wow-marquee-track {
+    animation-play-state: paused;
+}
+
+.wow-marquee-group {
+    display: flex;
+    gap: 10px;
+    padding-right: 10px;
+}
+
+.wow-chip {
+    direction: rtl;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--wow-chip-line);
+    background: var(--wow-chip-bg);
+    color: var(--ink, inherit);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+html[dir="ltr"] .wow-chip {
+    direction: ltr;
+}
+
+.wow-chip i {
+    color: var(--wow-accent);
+}
+
+.wow-chip:hover {
+    border-color: var(--wow-accent);
+    transform: translateY(-2px);
+}
+
+@keyframes wow-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@media (min-width: 900px) {
+    .wow-marquee {
+        margin: 0 0 64px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wow-marquee {
+        overflow-x: auto;
+    }
+
+    .wow-marquee-track {
+        animation: none;
+    }
+
+    .wow-marquee-group[aria-hidden="true"] {
+        display: none;
+    }
+}
+
+/* ===== Services: numbered + featured card, bento on desktop ===== */
+.services-container {
+    counter-reset: wow-svc;
+}
+
+.service-card {
+    position: relative;
+    overflow: hidden;
+    counter-increment: wow-svc;
+}
+
+.service-card::after {
+    content: counter(wow-svc, decimal-leading-zero);
+    position: absolute;
+    top: 16px;
+    inset-inline-end: 20px;
+    font-family: "Inter", "Heebo", sans-serif;
+    font-size: 2.6rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink, currentColor);
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+.service-card:first-child {
+    background: var(--wow-feature-bg) !important;
+    border-color: transparent !important;
+}
+
+.service-card:first-child h3 {
+    color: var(--wow-feature-ink) !important;
+}
+
+.service-card:first-child p {
+    color: var(--wow-feature-muted) !important;
+}
+
+.service-card:first-child::after {
+    color: var(--wow-feature-ink);
+    opacity: 0.25;
+}
+
+.service-card:first-child .service-icon {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.service-card:first-child .service-icon i {
+    color: var(--wow-accent) !important;
+}
+
+@media (min-width: 900px) {
+    .services-container {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        grid-auto-rows: minmax(190px, auto);
+        gap: 16px !important;
+    }
+
+    .service-card {
+        padding: 28px 26px !important;
+        text-align: start !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-end !important;
+    }
+
+    .service-card .service-icon {
+        margin-bottom: auto !important;
+    }
+
+    .service-card h3 {
+        margin-top: 24px !important;
+        text-align: start !important;
+    }
+
+    .service-card p {
+        text-align: start !important;
+    }
+
+    .service-card:first-child {
+        grid-row: span 2;
+        padding: 36px 32px !important;
+    }
+
+    .service-card:first-child h3 {
+        font-size: 1.7rem !important;
+    }
+
+    .service-card:first-child p {
+        font-size: 1.1rem !important;
+        max-width: 34ch;
+    }
+
+    .service-card:first-child::after {
+        font-size: 5rem;
+    }
+
+    .service-card:last-child {
+        grid-column: 1 / -1;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 22px;
+        min-height: 0;
+    }
+
+    .service-card:last-child .service-icon {
+        margin: 0 !important;
+        flex-shrink: 0;
+    }
+
+    .service-card:last-child h3 {
+        margin: 0 !important;
+        flex-shrink: 0;
+    }
+
+    .service-card:last-child p {
+        margin: 0 !important;
+        padding-inline-end: 80px;
+    }
+}
+
+/* ===== Timeline progress fill ===== */
+#how-it-works > div {
+    --wow-p: 0;
+}
+
+.wow-line-fill {
+    position: absolute;
+    background: var(--wow-accent);
+    border-radius: 2px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#how-it-works > div > div::before {
+    z-index: 2;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+#how-it-works > div > div.is-done::before {
+    background: var(--wow-accent) !important;
+}
+
+@media (max-width: 899px) {
+    .wow-line-fill {
+        inset-inline-start: 7px;
+        top: 10px;
+        width: 2px;
+        height: calc((100% - 20px) * var(--wow-p));
+    }
+}
+
+@media (min-width: 1100px) {
+    .wow-line-fill {
+        top: 7px;
+        inset-inline-start: 8%;
+        height: 2px;
+        width: calc(84% * var(--wow-p));
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1099px) {
+    .wow-line-fill {
+        display: none;
+    }
+}
+
+/* ===== Testimonials: oversized quote mark ===== */
+.testimonial-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.testimonial-card::before {
+    content: "\201D";
+    position: absolute;
+    top: -28px;
+    inset-inline-end: 14px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 9rem;
+    line-height: 1;
+    color: var(--wow-accent);
+    opacity: 0.16;
+    pointer-events: none;
+}
+
+.testimonial-card > * {
+    position: relative;
+    z-index: 1;
+}
