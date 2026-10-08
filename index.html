@@ -12,6 +12,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            if (!/Android/i.test(navigator.userAgent)) return;
+            var SCALE = 0.8;
+            var meta = document.querySelector('meta[name="viewport"]');
+            function fit() {
+                var w = Math.min(screen.width, screen.height);
+                if (Math.abs(window.orientation) === 90) w = Math.max(screen.width, screen.height);
+                if (w >= 768) { meta.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"); return; }
+                meta.setAttribute("content", "width=" + Math.round(w / SCALE) + ", initial-scale=" + SCALE + ", minimum-scale=" + SCALE + ", maximum-scale=" + SCALE + ", user-scalable=no");
+            }
+            fit();
+            window.addEventListener("orientationchange", function () { setTimeout(fit, 150); });
+        })();
+    </script>
 <meta name="format-detection" content="telephone=no">
 <meta name="HandheldFriendly" content="true">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1767,7 +1782,7 @@
             <div style="text-align: center; margin-top: 20px; margin-bottom: 10px;">
                 <button onclick="toggleSidebar()" class="catalog-button" id="catalogBtn">
                     <i class="fas fa-folder-open" style="color: #ffffff; margin-left: 12px; font-size: 1.4em;"></i>
-                    <span class="translatable" data-key="ui.newCatalogButton">לאלפי מוצרים במחיר מפעל לחץ כאן</span>
+                    <span class="translatable" data-key="ui.newCatalogButton">קטלוג מפעלים</span>
                 </button>
             </div>
         </header>
@@ -2128,13 +2143,13 @@
         <script>
             // הוספת מפתחות תרגום חדשים
             if (translations && translations.he) {
-                translations.he.ui.newCatalogButton = "לאלפי מוצרים במחיר מפעל לחץ כאן";
+                translations.he.ui.newCatalogButton = "קטלוג מפעלים";
             }
             if (translations && translations.en) {
-                translations.en.ui.newCatalogButton = "View Catalogs";
+                translations.en.ui.newCatalogButton = "Factory Catalog";
             }
             if (translations && translations.zh) {
-                translations.zh.ui.newCatalogButton = "查看目录";
+                translations.zh.ui.newCatalogButton = "工厂目录";
             }
         </script>
 
@@ -4844,7 +4859,7 @@ function toggleCatalogMenu(id) {
     <a href="https://wa.me/972587009938" target="_blank" rel="noopener" class="mab-icon mab-wa" aria-label="WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
     <button type="button" class="mab-cta" onclick="toggleSidebar()">
         <i class="fas fa-folder-open" aria-hidden="true"></i>
-        <span class="translatable" data-key="ui.newCatalogButton">לאלפי מוצרים במחיר מפעל לחץ כאן</span>
+        <span class="translatable" data-key="ui.newCatalogButton">קטלוג מפעלים</span>
     </button>
 </nav>
 <style>
