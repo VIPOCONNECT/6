@@ -482,6 +482,44 @@
         footer.parentNode.insertBefore(band, footer);
     }
 
+    /* ---------- Footer: brand + contact cards ---------- */
+    function initFooter() {
+        var footer = document.querySelector("footer.footer-new");
+        var container = footer && footer.querySelector(".footer-container");
+        if (!container || footer.classList.contains("wow-footer")) return;
+        footer.classList.add("wow-footer");
+
+        var brand = document.createElement("div");
+        brand.className = "wow-foot-brand";
+        var word = document.createElement("div");
+        word.className = "wow-foot-word";
+        word.textContent = "VIPO";
+        word.setAttribute("aria-hidden", "true");
+        var tag = document.createElement("p");
+        tag.className = "wow-foot-tag";
+        tag.appendChild(translatableSpan("header.slogan"));
+        brand.appendChild(word);
+        brand.appendChild(tag);
+        container.insertBefore(brand, container.firstChild);
+
+        footer.querySelectorAll(".contact-list li").forEach(function (li) {
+            li.classList.add("wow-foot-card");
+            if (li.querySelector("a")) return;
+            var value = li.querySelector(".contact-text > span:not(.contact-label)");
+            if (!value) return;
+            var a = document.createElement("a");
+            a.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("Jabotinsky 3, Be'er Ya'akov, Israel");
+            a.target = "_blank";
+            a.rel = "noopener";
+            value.parentNode.insertBefore(a, value);
+            a.appendChild(value);
+        });
+        footer.querySelectorAll(".contact-list a[href^='https://wa.me']").forEach(function (a) {
+            a.target = "_blank";
+            a.rel = "noopener";
+        });
+    }
+
     /* ---------- Desktop pointer effects ---------- */
     function initHover() {
         if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
@@ -854,7 +892,7 @@
         var steps = [
             ["catalogs", initCatalogBrowser], ["logo", initLogo],
             ["nav", initNav], ["aurora", initAurora], ["marquee", initMarquee], ["globe", initGlobe],
-            ["fold", initFold], ["benefits", initBenefitsPhoto], ["cta", initCta], ["form", initForm],
+            ["fold", initFold], ["benefits", initBenefitsPhoto], ["cta", initCta], ["footer", initFooter], ["form", initForm],
             ["reveal", initReveal], ["timeline", initTimeline], ["hover", initHover]
         ];
         steps.forEach(function (s) {

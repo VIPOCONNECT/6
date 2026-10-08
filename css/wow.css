@@ -1706,6 +1706,366 @@ html[lang="en"] .nfx-hero::after {
     }
 }
 
+/* ============ Footer: deep-space, brand + contact cards ============ */
+footer.footer-new.wow-footer {
+    position: relative;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #050913 !important;
+    box-shadow: 0 0 0 100vmax #050913 !important;
+    clip-path: inset(0 -100vmax) !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    color: #eef2fa !important;
+    overflow: visible !important;
+}
+
+footer.wow-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    pointer-events: none;
+    background:
+        radial-gradient(60% 50% at 50% 0%, rgba(70, 130, 255, 0.16), transparent 70%),
+        radial-gradient(1px 1px at 14% 30%, #fff 60%, transparent 61%),
+        radial-gradient(1px 1px at 72% 18%, #cfe0ff 60%, transparent 61%),
+        radial-gradient(1.5px 1.5px at 38% 76%, #fff 60%, transparent 61%),
+        radial-gradient(1px 1px at 88% 64%, #ffe9c2 60%, transparent 61%),
+        radial-gradient(1px 1px at 56% 46%, #fff 60%, transparent 61%);
+    background-size: 100% 100%, 340px 340px, 340px 340px, 340px 340px, 340px 340px, 340px 340px;
+    opacity: 0.8;
+}
+
+footer.wow-footer .wave-container,
+footer.wow-footer .map-container,
+footer.wow-footer .contact-info > .footer-heading {
+    display: none !important;
+}
+
+footer.wow-footer .footer-content {
+    position: relative;
+    margin: 0 !important;
+    background: none !important;
+    padding: 64px 0 28px !important;
+}
+
+footer.wow-footer p.wow-foot-tag {
+    color: #f4dcab !important;
+    -webkit-text-fill-color: currentColor !important;
+}
+
+footer.wow-footer .wow-foot-tag span,
+footer.wow-footer .copyright p span {
+    color: inherit !important;
+    font-weight: inherit !important;
+}
+
+footer.wow-footer .footer-container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.wow-foot-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.wow-foot-word {
+    display: inline-block;
+    direction: ltr;
+    font-family: "Rubik", "Heebo", sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 6vw, 3.6rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    background: linear-gradient(100deg, #ffffff 0%, #d5ddee 40%, #f2c879 52%, #d5ddee 64%, #ffffff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.wow-foot-tag {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    margin: 14px auto 0 !important;
+    padding: 6px 16px !important;
+    border-radius: 999px;
+    border: 1px solid rgba(242, 200, 121, 0.38);
+    background: rgba(255, 255, 255, 0.05);
+    color: #f4dcab !important;
+    font-size: 0.9rem !important;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+footer.wow-footer .footer-row {
+    display: block !important;
+    margin: 0 !important;
+}
+
+footer.wow-footer .footer-col {
+    width: auto !important;
+    max-width: none !important;
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+footer.wow-footer .contact-list {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none;
+}
+
+footer.wow-footer .contact-list li.wow-foot-card {
+    position: relative;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 0 !important;
+    padding: 22px 14px !important;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+footer.wow-footer .contact-list li.wow-foot-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(242, 200, 121, 0.5);
+    background: linear-gradient(180deg, rgba(242, 200, 121, 0.12), rgba(255, 255, 255, 0.03));
+}
+
+footer.wow-footer .contact-icon {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(242, 200, 121, 0.45) !important;
+    background: radial-gradient(circle at 30% 25%, rgba(242, 200, 121, 0.28), rgba(242, 200, 121, 0.06)) !important;
+    box-shadow: 0 0 24px rgba(242, 200, 121, 0.15);
+}
+
+footer.wow-footer .contact-icon i {
+    color: #f2c879 !important;
+    font-size: 1.2rem !important;
+    margin: 0 !important;
+}
+
+footer.wow-footer .contact-text {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    max-width: 100%;
+    text-align: center !important;
+}
+
+footer.wow-footer .contact-label {
+    color: rgba(238, 242, 250, 0.55) !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em;
+    margin: 0 !important;
+}
+
+footer.wow-footer .contact-text a,
+footer.wow-footer .contact-text a span {
+    color: #fff !important;
+    font-size: 0.98rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    overflow-wrap: anywhere;
+}
+
+footer.wow-footer .contact-text a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+footer.wow-footer .links-social {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 40px !important;
+    padding-top: 28px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+footer.wow-footer .quick-links-container .footer-heading {
+    display: none !important;
+}
+
+footer.wow-footer .quick-links {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none;
+}
+
+footer.wow-footer .quick-links li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+footer.wow-footer .quick-links a {
+    display: inline-flex !important;
+    padding: 8px 16px !important;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(238, 242, 250, 0.85) !important;
+    font-size: 0.9rem !important;
+    text-decoration: none !important;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+footer.wow-footer .quick-links a:hover {
+    border-color: rgba(242, 200, 121, 0.6);
+    color: #f4dcab !important;
+}
+
+footer.wow-footer .quick-links a::before,
+footer.wow-footer .quick-links a::after {
+    display: none !important;
+}
+
+footer.wow-footer .social-icons {
+    display: flex !important;
+    gap: 10px;
+    margin: 0 !important;
+    justify-content: center;
+}
+
+footer.wow-footer .social-icon {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: #eef2fa !important;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+footer.wow-footer .social-icon:hover {
+    border-color: rgba(242, 200, 121, 0.7) !important;
+    color: #f2c879 !important;
+    transform: translateY(-2px);
+}
+
+footer.wow-footer .copyright {
+    position: relative;
+    margin: 26px 0 0 !important;
+    padding: 18px 0 0 !important;
+    border: 0 !important;
+    text-align: center !important;
+}
+
+footer.wow-footer .copyright::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 120px;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, #f2c879, transparent);
+}
+
+footer.wow-footer .copyright p {
+    margin: 0 !important;
+    color: rgba(238, 242, 250, 0.5) !important;
+    font-size: 0.82rem !important;
+}
+
+footer.wow-footer .copyright p br {
+    display: none;
+}
+
+footer.wow-footer .copyright p span::before {
+    content: " · ";
+}
+
+@media (max-width: 899px) {
+    footer.wow-footer .footer-content {
+        padding: 48px 0 calc(96px + env(safe-area-inset-bottom)) !important;
+    }
+
+    footer.wow-footer .footer-container {
+        padding: 0 14px;
+    }
+
+    .wow-foot-brand {
+        margin-bottom: 26px;
+    }
+
+    footer.wow-footer .contact-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    footer.wow-footer .contact-list li.wow-foot-card {
+        padding: 18px 10px !important;
+        gap: 10px;
+    }
+
+    footer.wow-footer .contact-list li.wow-foot-card:nth-child(n + 3) {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: center;
+        gap: 14px;
+        padding: 14px 16px !important;
+    }
+
+    footer.wow-footer .contact-list li.wow-foot-card:nth-child(n + 3) .contact-text {
+        align-items: flex-start;
+        text-align: start !important;
+    }
+
+    footer.wow-footer .contact-text a,
+    footer.wow-footer .contact-text a span {
+        font-size: 0.86rem !important;
+    }
+
+    footer.wow-footer .links-social {
+        flex-direction: column;
+        justify-content: center;
+        margin-top: 28px !important;
+        padding-top: 22px !important;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .wow-logo-l,
     .wow-orbit-spin,
