@@ -2648,32 +2648,6 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section class="contact" id="contact">
-            <h2><span class="chinese-icon" aria-hidden="true">&#x260E;</span> <span class="translatable" data-key="contact.title">Contact Us</span> <span class="chinese-icon" aria-hidden="true">&#x260E;</span></h2>
-            <div class="contact-form">
-                <form id="contact-form" action="#" method="post" class="contact-form">
-                    <div class="form-group">
-                        <label for="name" class="translatable" data-key="contact.name">Full Name</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email" class="translatable" data-key="contact.email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone" class="translatable" data-key="contact.phone">Phone</label>
-                        <input type="tel" id="phone" name="phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="message" class="translatable" data-key="contact.message">Message</label>
-                        <textarea id="message" name="message" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn translatable" data-key="contact.submit">Send</button>
-                </form>
-            </div>
-        </section>
-
         <!-- מחשבון עלויות שילוח - פתיחה בחלון חדש -->
         <div class="calculator-section">
             <h2 class="section-heading translatable" data-key="calculator.title">מחשבון עלויות שילוח</h2>
@@ -2708,7 +2682,7 @@
                 <div class="footer-container">
                     <div class="footer-row">
                         <!-- חלק 1: פרטי יצירת קשר -->
-                        <div class="footer-col contact-info">
+                        <div class="footer-col contact-info" id="contact">
                             <h3 class="footer-heading translatable" data-key="footer.quickContact" data-html="true"></h3>
                             <ul class="contact-list">
                                 <li>
@@ -3282,7 +3256,7 @@ function toggleCatalogMenu(id) {
                     }, { passive: false });
                     
                     // טיפול במקלדת וירטואלית במובייל
-                    const formInputs = document.querySelectorAll('input, textarea');
+                    const formInputs = document.querySelectorAll('.contact-form input, .contact-form textarea');
                     formInputs.forEach(input => {
                         input.addEventListener('focus', function() {
                             // הוספת ריווח בתחתית הטופס כדי לאפשר גלילה כשהמקלדת פתוחה
