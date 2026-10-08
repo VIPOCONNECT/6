@@ -40,6 +40,7 @@
             return;
         }
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.outputEncoding = THREE.sRGBEncoding;
         holder.appendChild(renderer.domElement);
 
         var scene = new THREE.Scene();
@@ -50,39 +51,61 @@
         var globe = new THREE.Group();
         scene.add(globe);
 
-        var baseMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.92 });
-        globe.add(new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), baseMat));
-
-        var N = 2200;
-        var pos = new Float32Array(N * 3);
-        var golden = Math.PI * (3 - Math.sqrt(5));
-        for (var i = 0; i < N; i++) {
-            var y = 1 - (i / (N - 1)) * 2;
-            var rr = Math.sqrt(1 - y * y);
-            var th = golden * i;
-            pos[i * 3] = Math.cos(th) * rr * (R + 0.005);
-            pos[i * 3 + 1] = y * (R + 0.005);
-            pos[i * 3 + 2] = Math.sin(th) * rr * (R + 0.005);
+        var loader = new THREE.TextureLoader();
+        var maxAniso = renderer.capabilities.getMaxAnisotropy();
+        var redraw = function () {};
+        function tex(name, srgb, onLoad) {
+            return loader.load("assets/img/earth/" + name, function (t) {
+                if (srgb) t.encoding = THREE.sRGBEncoding;
+                t.anisotropy = maxAniso;
+                if (onLoad) onLoad(t);
+                redraw();
+            });
         }
-        var dotsGeo = new THREE.BufferGeometry();
-        dotsGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-        var dotsMat = new THREE.PointsMaterial({ size: 0.03, transparent: true, opacity: 0.9 });
-        globe.add(new THREE.Points(dotsGeo, dotsMat));
 
-        var ringMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.18 });
-        [-60, -30, 0, 30, 60].forEach(function (lat) {
-            var pts = [];
-            var phi = (90 - lat) * Math.PI / 180;
-            for (var k = 0; k <= 96; k++) {
-                var t = (k / 96) * Math.PI * 2;
-                pts.push(new THREE.Vector3(
-                    Math.sin(phi) * Math.cos(t) * (R + 0.01),
-                    Math.cos(phi) * (R + 0.01),
-                    Math.sin(phi) * Math.sin(t) * (R + 0.01)
-                ));
-            }
-            globe.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), ringMat));
+        var earthMat = new THREE.MeshPhongMaterial({
+            color: 0xffffff,
+            specular: new THREE.Color(0x2a3f5c),
+            shininess: 22,
+            emissive: new THREE.Color(0xffc982),
+            emissiveIntensity: 0
         });
+        earthMat.map = tex("earth_atmos_2048.jpg", true, function () {
+            earthMat.needsUpdate = true;
+            holder.classList.add("is-loaded");
+        });
+        setTimeout(function () { holder.classList.add("is-loaded"); }, 5000);
+        earthMat.specularMap = tex("earth_specular_2048.jpg", false);
+        globe.add(new THREE.Mesh(new THREE.SphereGeometry(R, 96, 96), earthMat));
+
+        var lightsLoaded = false;
+        function loadLights() {
+            if (lightsLoaded) return;
+            lightsLoaded = true;
+            earthMat.emissiveMap = tex("earth_lights_2048.jpg", true, function () { earthMat.needsUpdate = true; });
+        }
+
+        var cloudMat = new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.5, depthWrite: false });
+        cloudMat.map = tex("earth_clouds_1024.png", true, function () { cloudMat.needsUpdate = true; });
+        var clouds = new THREE.Mesh(new THREE.SphereGeometry(R * 1.012, 64, 64), cloudMat);
+        globe.add(clouds);
+
+        var atmoMat = new THREE.ShaderMaterial({
+            uniforms: { glowColor: { value: new THREE.Color(0x4f9dff) }, power: { value: 0.75 } },
+            vertexShader: "varying vec3 vN; void main(){ vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
+            fragmentShader: "uniform vec3 glowColor; uniform float power; varying vec3 vN; void main(){ float i = pow(0.68 - dot(vN, vec3(0.0,0.0,1.0)), 3.2) * power; gl_FragColor = vec4(glowColor, 1.0) * i; }",
+            side: THREE.BackSide,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            depthWrite: false
+        });
+        scene.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.2, 64, 64), atmoMat));
+
+        var ambient = new THREE.AmbientLight(0x9fb4d8, 0.5);
+        var sun = new THREE.DirectionalLight(0xffffff, 1.15);
+        sun.position.set(-4, 2.2, 5);
+        scene.add(ambient);
+        scene.add(sun);
 
         function latLon(lat, lon, r) {
             var phi = (90 - lat) * Math.PI / 180;
@@ -101,6 +124,8 @@
 
         var accentMat = new THREE.MeshBasicMaterial();
         globe.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 96, 0.012, 8, false), accentMat));
+        var arcGlowMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.28, blending: THREE.AdditiveBlending, depthWrite: false });
+        globe.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 96, 0.04, 8, false), arcGlowMat));
 
         var markerGeo = new THREE.SphereGeometry(0.045, 16, 16);
         [china, israel].forEach(function (p) {
@@ -130,14 +155,14 @@
 
         function applyTheme() {
             var dark = isDark();
-            baseMat.color.set(dark ? 0x0b1220 : 0xffffff);
-            dotsMat.color.set(dark ? 0x9fb3d9 : 0x0c2340);
-            dotsMat.opacity = dark ? 0.9 : 0.5;
-            ringMat.color.set(dark ? 0x8fa3c8 : 0x0c2340);
-            ringMat.opacity = dark ? 0.1 : 0.12;
-            accentMat.color.set(dark ? 0xd4b26a : 0xb08a4a);
-            pulses.forEach(function (p) { p.material.color.set(dark ? 0xd4b26a : 0xb08a4a); });
-            ship.material.color.set(dark ? 0xffffff : 0x0c2340);
+            if (dark) loadLights();
+            earthMat.emissiveIntensity = dark ? 0.85 : 0;
+            ambient.intensity = dark ? 0.32 : 0.55;
+            sun.intensity = dark ? 1.05 : 1.2;
+            accentMat.color.set(0xf2c879);
+            arcGlowMat.color.set(0xf2c879);
+            pulses.forEach(function (p) { p.material.color.set(0xf2c879); });
+            ship.material.color.set(0xffffff);
         }
         applyTheme();
         new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
@@ -164,6 +189,7 @@
         function frame(now) {
             var t = (now - start) / 1000;
             globe.rotation.y = baseY + Math.sin(t * 0.25) * 0.35;
+            clouds.rotation.y = t * 0.018;
             var s = (t * 0.18) % 1;
             ship.position.copy(curve.getPoint(s));
             pulses.forEach(function (p) {
@@ -176,6 +202,7 @@
 
         if (reduceMotion) {
             ship.position.copy(curve.getPoint(0.5));
+            redraw = function () { renderer.render(scene, camera); };
             renderer.render(scene, camera);
             new MutationObserver(function () { renderer.render(scene, camera); })
                 .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
@@ -543,6 +570,36 @@
         });
     }
 
+    /* ---------- Hero wordmark ---------- */
+    function initLogo() {
+        var h1 = document.querySelector(".container > header .main-logo");
+        if (!h1 || h1.querySelector(".wow-logo-l")) return;
+        var word = h1.textContent.trim();
+        if (!word) return;
+        h1.setAttribute("aria-label", word);
+        h1.textContent = "";
+        h1.classList.add("wow-logo");
+        word.split("").forEach(function (ch, i) {
+            var s = document.createElement("span");
+            s.className = "wow-logo-l";
+            s.setAttribute("aria-hidden", "true");
+            s.style.setProperty("--i", i);
+            s.textContent = ch;
+            if (i === word.length - 1 && /o/i.test(ch)) {
+                s.classList.add("wow-logo-o");
+                var orbit = document.createElement("span");
+                orbit.className = "wow-orbit";
+                var spin = document.createElement("span");
+                spin.className = "wow-orbit-spin";
+                orbit.appendChild(spin);
+                s.appendChild(orbit);
+            }
+            h1.appendChild(s);
+        });
+        var slogan = document.querySelector(".container > header .header-slogan");
+        if (slogan) slogan.classList.add("wow-kicker");
+    }
+
     /* ---------- Netflix-style catalog browser ---------- */
     var LP_COVERS = ["8Qyup", "MZKP3", "hUYAQ", "snhha", "y0Xcx", "Af7eO", "Icq4b", "6Fmy1", "UTYvj",
         "kXZgV", "iNCOx", "oUghk", "Nl1ey", "4Xrbg", "VaSf6", "aIcAa", "kd2BP"];
@@ -790,7 +847,7 @@
 
     function init() {
         var steps = [
-            ["catalogs", initCatalogBrowser],
+            ["catalogs", initCatalogBrowser], ["logo", initLogo],
             ["nav", initNav], ["aurora", initAurora], ["marquee", initMarquee], ["globe", initGlobe],
             ["benefits", initBenefitsPhoto], ["cta", initCta], ["form", initForm],
             ["reveal", initReveal], ["timeline", initTimeline], ["hover", initHover]

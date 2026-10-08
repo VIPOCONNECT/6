@@ -1437,3 +1437,250 @@ html[lang="en"] .nfx-hero::after {
         animation: none !important;
     }
 }
+
+/* ============ Hero v2: deep-space backdrop, real Earth, wordmark ============ */
+.container > header.wow-hero {
+    --wow-blob1: rgba(70, 130, 255, 0.36);
+    --wow-blob2: rgba(242, 200, 121, 0.16);
+    --wow-blob3: rgba(120, 80, 255, 0.24);
+    --wow-glow: rgba(79, 157, 255, 0.32);
+    background: #050913 !important;
+    box-shadow: 0 0 0 100vmax #050913 !important;
+    clip-path: inset(-400px -100vmax 0) !important;
+    color: #eef2fa !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+.wow-hero .wow-aurora::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.55;
+    background-image:
+        radial-gradient(1px 1px at 12% 18%, #fff 60%, transparent 61%),
+        radial-gradient(1px 1px at 28% 72%, #cfe0ff 60%, transparent 61%),
+        radial-gradient(1.5px 1.5px at 44% 34%, #fff 60%, transparent 61%),
+        radial-gradient(1px 1px at 63% 12%, #fff 60%, transparent 61%),
+        radial-gradient(1px 1px at 78% 58%, #ffe9c2 60%, transparent 61%),
+        radial-gradient(1.5px 1.5px at 90% 26%, #fff 60%, transparent 61%),
+        radial-gradient(1px 1px at 6% 84%, #fff 60%, transparent 61%),
+        radial-gradient(1px 1px at 52% 88%, #cfe0ff 60%, transparent 61%);
+    background-size: 380px 380px;
+    animation: wow-twinkle 6s ease-in-out infinite alternate;
+}
+
+@keyframes wow-twinkle {
+    from { opacity: 0.35; }
+    to { opacity: 0.7; }
+}
+
+.wow-hero-visual canvas {
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 1.2s ease, transform 1.6s cubic-bezier(.2, .8, .2, 1);
+}
+
+.wow-hero-visual.is-loaded canvas {
+    opacity: 1;
+    transform: none;
+}
+
+.wow-hero .gradient-separator {
+    display: none !important;
+}
+
+.wow-hero .main-logo.wow-logo {
+    display: inline-flex !important;
+    direction: ltr;
+    margin: 0 0 30px !important;
+    padding: 0 !important;
+    font-family: "Rubik", "Heebo", sans-serif !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+    line-height: 0.9 !important;
+    color: #fff !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    text-shadow: none !important;
+    perspective: 600px;
+}
+
+.wow-hero .main-logo.wow-logo::before,
+.wow-hero .main-logo.wow-logo::after {
+    display: none !important;
+}
+
+.wow-logo-l {
+    display: inline-block;
+    position: relative;
+    background: linear-gradient(100deg, #ffffff 0%, #d5ddee 36%, #ffe6ad 47%, #f2c879 53%, #d5ddee 64%, #ffffff 100%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 10px 34px rgba(79, 157, 255, 0.28));
+    animation:
+        wow-letter-in 0.9s cubic-bezier(.2, .8, .2, 1) both,
+        wow-shine 7s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 90ms), calc(1.5s + var(--i, 0) * 110ms);
+}
+
+@keyframes wow-letter-in {
+    from { opacity: 0; transform: translateY(45%) rotateX(70deg); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes wow-shine {
+    0% { background-position: 100% 0; }
+    32%, 100% { background-position: 0 0; }
+}
+
+.wow-logo-o {
+    margin-inline-start: 0.02em;
+}
+
+.wow-orbit {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    width: 168%;
+    height: 168%;
+    transform: translate(-50%, -50%) rotate(-18deg) scaleY(0.32);
+    pointer-events: none;
+}
+
+.wow-orbit-spin {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(242, 200, 121, 0.85);
+    border-left-color: rgba(242, 200, 121, 0.08);
+    border-bottom-color: rgba(242, 200, 121, 0.3);
+    animation: wow-spin 6s linear infinite;
+}
+
+.wow-orbit-spin::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    width: 13px;
+    height: 13px;
+    margin-left: -6.5px;
+    border-radius: 50%;
+    background: #fff3d6;
+    box-shadow: 0 0 16px 5px rgba(242, 200, 121, 0.85);
+}
+
+@keyframes wow-spin {
+    to { transform: rotate(360deg); }
+}
+
+.wow-hero .header-slogan.wow-kicker {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 10px;
+    width: auto !important;
+    max-width: max-content;
+    padding: 8px 18px 8px 14px !important;
+    margin: 0 0 22px !important;
+    border-radius: 999px;
+    border: 1px solid rgba(242, 200, 121, 0.38);
+    background: rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #f4dcab !important;
+    -webkit-text-fill-color: currentColor !important;
+    font-size: clamp(0.88rem, 1.25vw, 1.05rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.06em !important;
+    line-height: 1.2 !important;
+    text-shadow: none !important;
+    animation: wow-rise 0.8s ease 0.1s both;
+}
+
+.wow-kicker::before {
+    content: "";
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f2c879;
+    animation: wow-ping 2.2s ease-out infinite;
+}
+
+@keyframes wow-ping {
+    0% { box-shadow: 0 0 0 0 rgba(242, 200, 121, 0.65); }
+    70%, 100% { box-shadow: 0 0 0 9px rgba(242, 200, 121, 0); }
+}
+
+@keyframes wow-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+}
+
+.wow-hero .catalog-button {
+    background: linear-gradient(135deg, #f6d48d, #d9a94f) !important;
+    color: #0b1220 !important;
+    border: 0 !important;
+    box-shadow: 0 14px 34px rgba(242, 200, 121, 0.28) !important;
+}
+
+.wow-hero .catalog-button i {
+    color: inherit !important;
+}
+
+.wow-hero .wow-scroll-cue {
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+@media (min-width: 900px) {
+    .wow-hero > .header-slogan.wow-kicker { grid-row: 2; align-self: end; justify-self: start; }
+    .wow-hero > .main-logo.wow-logo { grid-row: 3; justify-self: start; }
+    .wow-hero > div:not(.wow-hero-visual):not(.gradient-separator) { grid-row: 4; }
+
+    .wow-hero .main-logo.wow-logo {
+        font-size: clamp(5.5rem, 10vw, 9.5rem) !important;
+    }
+}
+
+@media (max-width: 899px) {
+    .container > header.wow-hero {
+        padding-bottom: 36px !important;
+    }
+
+    .wow-hero {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .wow-hero > .header-slogan.wow-kicker { order: 1; align-self: flex-start; }
+    .wow-hero > .main-logo.wow-logo { order: 2; align-self: flex-start; }
+    .wow-hero > div:not(.wow-hero-visual):not(.gradient-separator) { order: 3; }
+
+    .wow-hero .main-logo.wow-logo {
+        font-size: clamp(4.2rem, 21vw, 6rem) !important;
+        margin-bottom: 24px !important;
+        padding-right: 0.22em !important;
+    }
+
+    .wow-orbit {
+        width: 150%;
+        height: 150%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wow-logo-l,
+    .wow-orbit-spin,
+    .wow-kicker,
+    .wow-kicker::before,
+    .wow-hero .wow-aurora::before {
+        animation: none !important;
+    }
+}
