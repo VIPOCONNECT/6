@@ -1978,6 +1978,10 @@ footer.wow-footer .social-icon {
     transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
+footer.wow-footer .social-icon:not([href]) {
+    cursor: default;
+}
+
 footer.wow-footer .social-icon:hover {
     border-color: rgba(242, 200, 121, 0.7) !important;
     color: #f2c879 !important;
