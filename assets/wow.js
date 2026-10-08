@@ -233,6 +233,7 @@
                 cap.appendChild(label);
                 chip.appendChild(cap);
                 chip.addEventListener("click", function () {
+                    if (window.wowOpenCatalogs) { window.wowOpenCatalogs(id); return; }
                     if (typeof toggleSidebar === "function") toggleSidebar();
                     if (id && typeof toggleCatalogMenu === "function") {
                         var items = document.getElementById(id);
@@ -542,8 +543,254 @@
         });
     }
 
+    /* ---------- Netflix-style catalog browser ---------- */
+    var LP_COVERS = ["8Qyup", "MZKP3", "hUYAQ", "snhha", "y0Xcx", "Af7eO", "Icq4b", "6Fmy1", "UTYvj",
+        "kXZgV", "iNCOx", "oUghk", "Nl1ey", "4Xrbg", "VaSf6", "aIcAa", "kd2BP"];
+    var LP_DEAD = ["tdZzu"];
+
+    function coverFor(href, catId) {
+        var m = /vipocatalog\.github\.io\/(\d+)\//.exec(href);
+        if (m) return "https://vipocatalog.github.io/" + m[1] + "/images/page_1.webp";
+        m = /lp6\.me\/([A-Za-z0-9]+)/.exec(href);
+        if (m && LP_COVERS.indexOf(m[1]) !== -1) return "assets/img/cat/lp-" + m[1] + ".jpg";
+        return "assets/img/cat-" + catId + ".jpg";
+    }
+
+    function cloneLabel(src) {
+        var s = document.createElement("span");
+        if (src.classList.contains("translatable") && src.dataset.key) {
+            s.className = "translatable";
+            s.setAttribute("data-key", src.dataset.key);
+        }
+        s.textContent = src.textContent.trim();
+        return s;
+    }
+
+    function initCatalogBrowser() {
+        var sidebar = document.getElementById("catalogSidebar");
+        if (!sidebar) return;
+
+        var cats = [];
+        sidebar.querySelectorAll(".catalog-category").forEach(function (cat) {
+            var h = cat.querySelector("h4");
+            var m = /toggleCatalogMenu\('([^']+)'\)/.exec((h && h.getAttribute("onclick")) || "");
+            if (!h || !m) return;
+            var items = [];
+            cat.querySelectorAll(".catalog-items a[href]").forEach(function (a) {
+                var href = a.getAttribute("href");
+                if (!href || href === "#") return;
+                var dead = LP_DEAD.some(function (k) { return href.indexOf("/" + k) !== -1; });
+                if (!dead) items.push(a);
+            });
+            if (items.length) cats.push({ id: m[1], head: h, items: items });
+        });
+        if (!cats.length) return;
+
+        var root = document.createElement("div");
+        root.className = "nfx";
+        root.id = "wow-catalogs";
+        root.setAttribute("role", "dialog");
+        root.setAttribute("aria-modal", "true");
+        root.hidden = true;
+
+        var top = document.createElement("div");
+        top.className = "nfx-top";
+        var brand = document.createElement("span");
+        brand.className = "nfx-brand";
+        brand.textContent = "VIPO";
+        var title = document.createElement("h2");
+        title.className = "nfx-title";
+        var titleSrc = sidebar.querySelector(".sidebar-header h3");
+        if (titleSrc) title.appendChild(cloneLabel(titleSrc));
+        var close = document.createElement("button");
+        close.type = "button";
+        close.className = "nfx-close";
+        close.setAttribute("aria-label", "×");
+        close.appendChild(iconEl("fas fa-times"));
+        top.appendChild(brand);
+        top.appendChild(title);
+        top.appendChild(close);
+
+        var chipsBar = document.createElement("div");
+        chipsBar.className = "nfx-chips";
+
+        var hero = document.createElement("a");
+        hero.className = "nfx-hero";
+        hero.target = "_blank";
+        hero.rel = "noopener";
+        var heroBg = document.createElement("div");
+        heroBg.className = "nfx-hero-bg";
+        var heroBody = document.createElement("div");
+        heroBody.className = "nfx-hero-body";
+        var heroCat = document.createElement("span");
+        heroCat.className = "nfx-hero-cat";
+        var heroName = document.createElement("h3");
+        heroName.className = "nfx-hero-name";
+        var heroPlay = document.createElement("span");
+        heroPlay.className = "nfx-hero-play";
+        heroPlay.appendChild(iconEl("fas fa-play"));
+        heroBody.appendChild(heroCat);
+        heroBody.appendChild(heroName);
+        heroBody.appendChild(heroPlay);
+        hero.appendChild(heroBg);
+        hero.appendChild(heroBody);
+
+        var rows = document.createElement("div");
+        rows.className = "nfx-rows";
+
+        var featured = [];
+        cats.forEach(function (c) {
+            var chip = document.createElement("button");
+            chip.type = "button";
+            chip.className = "nfx-chip";
+            chip.appendChild(iconEl("fas " + (CATEGORY_ICONS[c.id] || "fa-box")));
+            chip.appendChild(cloneLabel(c.head));
+            chip.addEventListener("click", function () { scrollToRow(c.id); });
+            chipsBar.appendChild(chip);
+
+            var row = document.createElement("section");
+            row.className = "nfx-row";
+            row.id = "nfx-row-" + c.id;
+            var rh = document.createElement("h3");
+            rh.className = "nfx-row-title";
+            rh.appendChild(cloneLabel(c.head));
+            var count = document.createElement("span");
+            count.className = "nfx-row-count";
+            count.textContent = c.items.length;
+            rh.appendChild(count);
+
+            var wrap = document.createElement("div");
+            wrap.className = "nfx-track-wrap";
+            var track = document.createElement("div");
+            track.className = "nfx-track";
+
+            c.items.forEach(function (a) {
+                var href = a.getAttribute("href");
+                var card = document.createElement("a");
+                card.className = "nfx-card";
+                card.href = href;
+                card.target = "_blank";
+                card.rel = "noopener";
+                var img = document.createElement("img");
+                img.src = coverFor(href, c.id);
+                img.alt = "";
+                img.loading = "lazy";
+                img.decoding = "async";
+                img.onerror = function () {
+                    var fb = "assets/img/cat-" + c.id + ".jpg";
+                    if (this.getAttribute("src") !== fb) this.src = fb; else this.remove();
+                };
+                var name = document.createElement("span");
+                name.className = "nfx-card-name";
+                name.appendChild(cloneLabel(a));
+                var go = document.createElement("span");
+                go.className = "nfx-card-go";
+                go.appendChild(iconEl("fas fa-play"));
+                card.appendChild(img);
+                card.appendChild(go);
+                card.appendChild(name);
+                track.appendChild(card);
+                if (coverFor(href, c.id).indexOf("assets/img/cat-") !== 0) {
+                    featured.push({ href: href, img: coverFor(href, c.id), name: a, cat: c.head });
+                }
+            });
+
+            ["prev", "next"].forEach(function (dir) {
+                var b = document.createElement("button");
+                b.type = "button";
+                b.className = "nfx-arrow nfx-" + dir;
+                b.tabIndex = -1;
+                b.setAttribute("aria-hidden", "true");
+                b.appendChild(iconEl("fas fa-chevron-" + (dir === "prev" ? "right" : "left")));
+                b.addEventListener("click", function () {
+                    var rtl = getComputedStyle(track).direction === "rtl";
+                    var step = track.clientWidth * 0.85 * (dir === "next" ? 1 : -1);
+                    track.scrollBy({ left: rtl ? -step : step, behavior: "smooth" });
+                });
+                wrap.appendChild(b);
+            });
+            wrap.insertBefore(track, wrap.firstChild);
+            row.appendChild(rh);
+            row.appendChild(wrap);
+            rows.appendChild(row);
+        });
+
+        var body = document.createElement("div");
+        body.className = "nfx-body";
+        body.appendChild(hero);
+        body.appendChild(chipsBar);
+        body.appendChild(rows);
+        root.appendChild(top);
+        root.appendChild(body);
+        document.body.appendChild(root);
+
+        var heroIdx = 0, heroTimer = null;
+        function showHero(i) {
+            if (!featured.length) { hero.hidden = true; return; }
+            var f = featured[i % featured.length];
+            hero.href = f.href;
+            heroBg.style.backgroundImage = 'url("' + f.img + '")';
+            heroCat.textContent = "";
+            heroCat.appendChild(cloneLabel(f.cat));
+            heroName.textContent = "";
+            heroName.appendChild(cloneLabel(f.name));
+            hero.setAttribute("aria-label", f.name.textContent.trim());
+            hero.classList.remove("is-swap");
+            void hero.offsetWidth;
+            hero.classList.add("is-swap");
+        }
+        function startHero() {
+            stopHero();
+            if (featured.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+            heroTimer = setInterval(function () { heroIdx = (heroIdx + 1) % featured.length; showHero(heroIdx); }, 6500);
+        }
+        function stopHero() { if (heroTimer) clearInterval(heroTimer); heroTimer = null; }
+
+        function scrollToRow(id) {
+            var row = document.getElementById("nfx-row-" + id);
+            if (!row) return;
+            body.scrollTo({ top: row.offsetTop - 12, behavior: "smooth" });
+        }
+
+        var lastFocus = null, pushed = false;
+        function open(catId) {
+            if (!root.hidden) { if (catId) scrollToRow(catId); return; }
+            lastFocus = document.activeElement;
+            heroIdx = Math.floor(Math.random() * Math.max(featured.length, 1));
+            showHero(heroIdx);
+            root.hidden = false;
+            document.documentElement.classList.add("nfx-open");
+            body.scrollTop = 0;
+            requestAnimationFrame(function () { root.classList.add("is-open"); });
+            try { history.pushState({ nfx: 1 }, ""); pushed = true; } catch (e) { pushed = false; }
+            startHero();
+            close.focus({ preventScroll: true });
+            if (catId) setTimeout(function () { scrollToRow(catId); }, 260);
+        }
+        function hide(fromPop) {
+            if (root.hidden) return;
+            stopHero();
+            root.classList.remove("is-open");
+            document.documentElement.classList.remove("nfx-open");
+            setTimeout(function () { root.hidden = true; }, 220);
+            if (pushed && !fromPop) { pushed = false; history.back(); }
+            pushed = false;
+            if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+        }
+
+        close.addEventListener("click", function () { hide(false); });
+        window.addEventListener("popstate", function () { if (!root.hidden) hide(true); });
+        document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !root.hidden) hide(false); });
+        hero.addEventListener("mouseenter", stopHero);
+        hero.addEventListener("mouseleave", startHero);
+
+        window.wowOpenCatalogs = open;
+        window.toggleSidebar = function () { if (root.hidden) open(); else hide(false); };
+    }
+
     function init() {
         var steps = [
+            ["catalogs", initCatalogBrowser],
             ["nav", initNav], ["aurora", initAurora], ["marquee", initMarquee], ["globe", initGlobe],
             ["benefits", initBenefitsPhoto], ["cta", initCta], ["form", initForm],
             ["reveal", initReveal], ["timeline", initTimeline], ["hover", initHover]

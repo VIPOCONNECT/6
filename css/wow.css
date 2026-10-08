@@ -977,3 +977,463 @@ form.contact-form {
         grid-column: 1 / -1;
     }
 }
+
+/* ============ Netflix-style catalog browser ============ */
+html.nfx-open,
+html.nfx-open body {
+    overflow: hidden !important;
+}
+
+#catalogSidebar {
+    display: none !important;
+}
+
+.nfx {
+    --nfx-bg: #08090d;
+    --nfx-ink: #f4f1ea;
+    --nfx-muted: rgba(244, 241, 234, 0.62);
+    --nfx-gold: #d4b26a;
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: var(--nfx-bg);
+    color: var(--nfx-ink);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: scale(1.02);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.nfx[hidden] {
+    display: none;
+}
+
+.nfx.is-open {
+    opacity: 1;
+    transform: none;
+}
+
+.nfx-top {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px clamp(16px, 4vw, 56px);
+    background: linear-gradient(180deg, rgba(8, 9, 13, 0.92), rgba(8, 9, 13, 0));
+    pointer-events: none;
+}
+
+.nfx-top > * {
+    pointer-events: auto;
+}
+
+.nfx-brand {
+    font-family: "Rubik", "Heebo", sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: var(--nfx-gold);
+    font-size: 1.25rem;
+}
+
+.nfx-title {
+    margin: 0 !important;
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    color: var(--nfx-ink) !important;
+    flex: 1;
+}
+
+.nfx-title::before,
+.nfx-title::after {
+    display: none !important;
+}
+
+.nfx-close {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(20, 22, 30, 0.7);
+    color: var(--nfx-ink);
+    font-size: 1.1rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.nfx-close:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: rotate(90deg);
+}
+
+.nfx-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding-bottom: 48px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.nfx-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(68vh, 620px);
+    padding: 0 clamp(16px, 4vw, 56px) calc(clamp(36px, 6vh, 64px) + 44px);
+    color: var(--nfx-ink) !important;
+    text-decoration: none !important;
+    overflow: hidden;
+}
+
+.nfx-hero-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.04);
+}
+
+.nfx-hero.is-swap .nfx-hero-bg {
+    animation: nfx-kenburns 7s ease-out both;
+}
+
+.nfx-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(0deg, var(--nfx-bg) 0%, rgba(8, 9, 13, 0.55) 38%, rgba(8, 9, 13, 0.1) 70%),
+        linear-gradient(270deg, rgba(8, 9, 13, 0.85) 0%, rgba(8, 9, 13, 0) 60%);
+}
+
+[dir="ltr"] .nfx-hero::after,
+html[lang="en"] .nfx-hero::after {
+    background:
+        linear-gradient(0deg, var(--nfx-bg) 0%, rgba(8, 9, 13, 0.55) 38%, rgba(8, 9, 13, 0.1) 70%),
+        linear-gradient(90deg, rgba(8, 9, 13, 0.85) 0%, rgba(8, 9, 13, 0) 60%);
+}
+
+.nfx-hero-body {
+    position: relative;
+    z-index: 1;
+    max-width: 620px;
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+}
+
+.nfx-hero.is-swap .nfx-hero-body {
+    animation: nfx-rise 0.6s ease both;
+}
+
+.nfx-hero-cat {
+    color: var(--nfx-gold);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.nfx-hero-name {
+    margin: 0 !important;
+    font-family: "Rubik", "Heebo", sans-serif;
+    font-size: clamp(1.9rem, 5vw, 3.6rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.05 !important;
+    color: #fff !important;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+.nfx-hero-name::before,
+.nfx-hero-name::after {
+    display: none !important;
+}
+
+.nfx-hero-play {
+    margin-top: 8px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    color: #0b0d12;
+    font-size: 1.15rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.nfx-hero:hover .nfx-hero-play {
+    transform: scale(1.08);
+    background: var(--nfx-gold);
+}
+
+.nfx-chips {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 68px clamp(16px, 4vw, 56px) 12px;
+    margin-top: -56px;
+    background: linear-gradient(180deg, rgba(8, 9, 13, 0) 0, var(--nfx-bg) 56px, var(--nfx-bg) 85%, rgba(8, 9, 13, 0));
+    pointer-events: none;
+}
+
+.nfx-chips > * {
+    pointer-events: auto;
+    scrollbar-width: none;
+}
+
+.nfx-chips::-webkit-scrollbar {
+    display: none;
+}
+
+.nfx-chip {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--nfx-ink);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.nfx-chip i {
+    color: var(--nfx-gold);
+}
+
+.nfx-chip:hover {
+    background: rgba(212, 178, 106, 0.16);
+    border-color: rgba(212, 178, 106, 0.5);
+}
+
+.nfx-row {
+    margin-top: 22px;
+    scroll-margin-top: 70px;
+}
+
+.nfx-row-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0 0 10px !important;
+    padding: 0 clamp(16px, 4vw, 56px);
+    font-family: "Rubik", "Heebo", sans-serif;
+    font-size: clamp(1.1rem, 2vw, 1.4rem) !important;
+    font-weight: 700 !important;
+    color: var(--nfx-ink) !important;
+    text-align: start !important;
+}
+
+.nfx-row-title::before,
+.nfx-row-title::after {
+    display: none !important;
+}
+
+.nfx-row-count {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--nfx-muted);
+}
+
+.nfx-track-wrap {
+    position: relative;
+}
+
+.nfx-track {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: clamp(16px, 4vw, 56px);
+    padding: 18px clamp(16px, 4vw, 56px) 26px;
+    margin: -18px 0 -26px;
+    scrollbar-width: none;
+}
+
+.nfx-track::-webkit-scrollbar {
+    display: none;
+}
+
+.nfx-card {
+    position: relative;
+    flex: 0 0 auto;
+    width: clamp(200px, 22vw, 300px);
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #1a1d26;
+    scroll-snap-align: start;
+    color: #fff !important;
+    text-decoration: none !important;
+    transition: transform 0.28s cubic-bezier(.2, .8, .2, 1), box-shadow 0.28s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.nfx-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #fff;
+    transition: transform 0.5s ease;
+}
+
+.nfx-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.25) 48%, rgba(0, 0, 0, 0) 70%);
+}
+
+.nfx-card-name {
+    position: absolute;
+    inset: auto 12px 10px 12px;
+    z-index: 1;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.nfx-card-go {
+    position: absolute;
+    top: 10px;
+    inset-inline-end: 10px;
+    z-index: 1;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.92);
+    color: #0b0d12;
+    font-size: 0.8rem;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.nfx-card:focus-visible {
+    outline: 3px solid var(--nfx-gold);
+    outline-offset: 2px;
+}
+
+.nfx-arrow {
+    display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .nfx-card:hover,
+    .nfx-card:focus-visible {
+        transform: scale(1.07);
+        z-index: 2;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 178, 106, 0.55);
+    }
+
+    .nfx-card:hover img {
+        transform: scale(1.06);
+    }
+
+    .nfx-card:hover .nfx-card-go,
+    .nfx-card:focus-visible .nfx-card-go {
+        opacity: 1;
+        transform: none;
+    }
+
+    .nfx-arrow {
+        display: grid;
+        place-items: center;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        z-index: 3;
+        width: clamp(16px, 4vw, 56px);
+        border: 0;
+        background: rgba(8, 9, 13, 0.55);
+        color: #fff;
+        font-size: 1.3rem;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s ease, background 0.2s ease;
+    }
+
+    .nfx-prev { inset-inline-start: 0; }
+    .nfx-next { inset-inline-end: 0; }
+
+    [dir="ltr"] .nfx-prev i,
+    [dir="ltr"] .nfx-next i {
+        transform: scaleX(-1);
+    }
+
+    .nfx-track-wrap:hover .nfx-arrow {
+        opacity: 1;
+    }
+
+    .nfx-arrow:hover {
+        background: rgba(8, 9, 13, 0.8);
+    }
+}
+
+@media (max-width: 899px) {
+    .nfx-hero {
+        min-height: 58vh;
+    }
+
+    .nfx-card {
+        width: 64vw;
+    }
+
+    .nfx-card-go {
+        opacity: 1;
+        transform: none;
+        width: 30px;
+        height: 30px;
+    }
+
+    .nfx-title {
+        font-size: 0.95rem !important;
+    }
+}
+
+@keyframes nfx-kenburns {
+    from { transform: scale(1.12); }
+    to { transform: scale(1.03); }
+}
+
+@keyframes nfx-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nfx,
+    .nfx-card,
+    .nfx-card img,
+    .nfx-hero.is-swap .nfx-hero-bg,
+    .nfx-hero.is-swap .nfx-hero-body {
+        transition: none !important;
+        animation: none !important;
+    }
+}
