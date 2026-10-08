@@ -1,0 +1,588 @@
+:root {
+    --lx-accent: var(--gold, var(--brass, #c9a65a));
+    --lx-bar-bg: rgba(255, 255, 255, 0.94);
+    --lx-bar-ink: #121826;
+    --lx-bar-line: rgba(16, 24, 40, 0.08);
+    --lx-cta-bg: var(--navy, #0c2340);
+    --lx-cta-ink: #ffffff;
+    --lx-dot: #ffffff;
+}
+
+html[data-theme="dark"] {
+    --lx-dot: #0b1220;
+    --lx-bar-bg: rgba(10, 14, 24, 0.9);
+    --lx-bar-ink: #f4f6fb;
+    --lx-bar-line: rgba(255, 255, 255, 0.08);
+    --lx-cta-bg: linear-gradient(180deg, #e2c47f 0%, #c9a65a 100%);
+    --lx-cta-ink: #0b0f18;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.services h2,
+.benefits h2,
+.testimonials-title,
+.contact h2,
+.calculator-section h2,
+#how-it-works h2 {
+    letter-spacing: -0.02em !important;
+    line-height: 1.2 !important;
+}
+
+.services h2::before,
+.benefits h2::before,
+.testimonials-title::before,
+.contact h2::before,
+#how-it-works h2::before {
+    content: "" !important;
+    display: block !important;
+    position: static !important;
+    transform: none !important;
+    width: 32px !important;
+    height: 3px !important;
+    border-radius: 99px;
+    background: var(--lx-accent) !important;
+    margin: 0 auto 14px;
+}
+
+.services h2::after,
+.benefits h2::after,
+.testimonials-title::after,
+.contact h2::after,
+#how-it-works h2::after,
+section::before,
+section::after {
+    content: none !important;
+    display: none !important;
+}
+
+.mobile-action-bar {
+    display: none;
+}
+
+/* ===== Mobile & tablet (app-style layout) ===== */
+@media (max-width: 899px) {
+    body {
+        padding-bottom: 84px !important;
+    }
+
+    .container {
+        padding: 0 18px !important;
+    }
+
+    /* Hero */
+    header {
+        min-height: 62svh;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        text-align: start !important;
+        padding: 40px 4px 28px !important;
+    }
+
+    .main-logo,
+    header h1 {
+        font-size: clamp(3.6rem, 19vw, 5rem) !important;
+        letter-spacing: 0.08em !important;
+        line-height: 1 !important;
+    }
+
+    .gradient-separator {
+        margin: 20px 0 16px !important;
+        width: 44px !important;
+    }
+
+    .header-slogan {
+        font-size: 1.35rem !important;
+        line-height: 1.4 !important;
+        margin: 0 0 28px !important;
+        text-align: start !important;
+    }
+
+    header > div {
+        width: 100% !important;
+        text-align: start !important;
+        margin: 0 !important;
+    }
+
+    .catalog-button {
+        width: 100% !important;
+        justify-content: center !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        min-height: 56px;
+    }
+
+    /* Intro */
+    .intro-container {
+        text-align: start !important;
+        padding: 26px 20px !important;
+        border-radius: 22px !important;
+        margin: 0 0 40px !important;
+    }
+
+    .intro-title,
+    .intro-container h2 {
+        font-size: 1.55rem !important;
+        display: block !important;
+        text-align: start !important;
+    }
+
+    .intro-paragraph,
+    .intro-content p {
+        font-size: 1rem !important;
+        line-height: 1.75 !important;
+        margin-bottom: 14px !important;
+        text-align: start !important;
+    }
+
+    .highlight-text {
+        margin-top: 6px !important;
+    }
+
+    /* Section headings: start-aligned */
+    .services h2,
+    .benefits h2,
+    .testimonials-title,
+    .contact h2,
+    .calculator-section h2,
+    #how-it-works h2 {
+        text-align: start !important;
+        font-size: 1.7rem !important;
+        margin-bottom: 20px !important;
+        padding: 0 2px;
+    }
+
+    .services h2::before,
+    .benefits h2::before,
+    .testimonials-title::before,
+    .contact h2::before,
+    #how-it-works h2::before {
+        margin: 0 0 12px;
+    }
+
+    .testimonials-title {
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+
+    .testimonials-title::before {
+        flex-basis: 100%;
+        max-width: 32px;
+    }
+
+    .services,
+    .benefits,
+    .testimonials-section,
+    .contact,
+    #how-it-works {
+        margin: 0 0 44px !important;
+    }
+
+    /* Services: horizontal swipe */
+    .services-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        grid-template-columns: none !important;
+        gap: 12px !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        margin: 0 -18px !important;
+        padding: 4px 18px 8px !important;
+        scroll-padding: 0 18px;
+    }
+
+    .services-container::-webkit-scrollbar,
+    .testimonials-compact::-webkit-scrollbar {
+        display: none;
+    }
+
+    .service-card {
+        flex: 0 0 76% !important;
+        max-width: 300px !important;
+        scroll-snap-align: start;
+        text-align: start !important;
+        padding: 22px 20px !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .service-card:hover {
+        transform: none !important;
+    }
+
+    .service-card h3 {
+        margin: 0 0 8px !important;
+        text-align: start !important;
+    }
+
+    .service-card p {
+        font-size: 0.95rem !important;
+        margin: 0 !important;
+        text-align: start !important;
+    }
+
+    /* How it works: vertical timeline */
+    #how-it-works {
+        padding: 28px 20px !important;
+        border-radius: 22px !important;
+    }
+
+    #how-it-works > div {
+        display: block !important;
+        position: relative;
+        padding-inline-start: 30px;
+    }
+
+    #how-it-works > div::before {
+        content: "";
+        position: absolute;
+        inset-inline-start: 7px;
+        top: 10px;
+        bottom: 10px;
+        width: 2px;
+        background: var(--line, rgba(127, 127, 127, 0.25));
+    }
+
+    #how-it-works > div > div {
+        position: relative;
+        max-width: none !important;
+        flex: none !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 0 22px !important;
+        border-radius: 0 !important;
+        transform: none !important;
+        text-align: start !important;
+    }
+
+    #how-it-works > div > div:last-child {
+        padding-bottom: 0 !important;
+    }
+
+    #how-it-works > div > div::before {
+        content: "";
+        position: absolute;
+        inset-inline-start: -30px;
+        top: 4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--lx-dot);
+        border: 2px solid var(--lx-accent);
+        box-sizing: border-box;
+    }
+
+    #how-it-works h3 {
+        margin: 0 0 4px !important;
+        font-size: 1.05rem !important;
+    }
+
+    #how-it-works p {
+        margin: 0 !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Benefits: 2x2 grid */
+    .benefits,
+    .benefits-container,
+    .benefits-text {
+        padding: 0 !important;
+        min-height: 0 !important;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .benefits-container {
+        display: block !important;
+    }
+
+    .benefits-image {
+        display: none !important;
+    }
+
+    .benefits-list {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        margin: 0 !important;
+    }
+
+    .benefits-list li {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        padding: 16px 14px !important;
+        margin: 0 !important;
+        text-align: start !important;
+    }
+
+    .benefits-list li:hover {
+        transform: none !important;
+    }
+
+    .benefit-icon {
+        margin: 0 !important;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        background: var(--gold-soft, var(--navy-soft, rgba(127, 127, 127, 0.12)));
+    }
+
+    .benefit-content h3 {
+        font-size: 0.98rem !important;
+        margin: 0 0 6px !important;
+        line-height: 1.3 !important;
+    }
+
+    .benefit-content p {
+        font-size: 0.85rem !important;
+        line-height: 1.55 !important;
+        margin: 0 !important;
+    }
+
+    /* Testimonials: horizontal swipe */
+    .testimonials-compact {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        grid-template-columns: none !important;
+        gap: 12px !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        margin: 0 -18px !important;
+        padding: 4px 18px 8px !important;
+        scroll-padding: 0 18px;
+    }
+
+    .testimonial-card {
+        flex: 0 0 84% !important;
+        max-width: 340px !important;
+        scroll-snap-align: start;
+        margin: 0 !important;
+        text-align: start !important;
+    }
+
+    .testimonial-card:hover {
+        transform: none !important;
+    }
+
+    .share-experience-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        display: inline-flex !important;
+        margin-top: 12px !important;
+    }
+
+    /* Contact & calculator */
+    .contact-form,
+    .calculator-section {
+        padding: 24px 18px !important;
+        border-radius: 22px !important;
+    }
+
+    .submit-btn,
+    .calculator-button {
+        width: 100% !important;
+        min-height: 52px;
+        justify-content: center !important;
+    }
+
+    .calculator-section {
+        margin: 0 0 32px !important;
+        text-align: start !important;
+    }
+
+    .calculator-section p {
+        text-align: start !important;
+    }
+
+    /* Footer: compact */
+    .footer-new {
+        margin-top: 24px !important;
+    }
+
+    .footer-content {
+        padding: 32px 0 16px !important;
+    }
+
+    .map-container {
+        display: none !important;
+    }
+
+    .footer-col {
+        margin: 0 0 22px !important;
+        min-width: 0 !important;
+    }
+
+    /* Floating buttons move aside for the action bar */
+    .realistic-whatsapp,
+    .whatsapp-float {
+        display: none !important;
+    }
+
+    .back-to-top {
+        bottom: 88px !important;
+    }
+
+    /* Bottom action bar */
+    .mobile-action-bar {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 990;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+        background: var(--lx-bar-bg);
+        backdrop-filter: saturate(160%) blur(16px);
+        -webkit-backdrop-filter: saturate(160%) blur(16px);
+        border-top: 1px solid var(--lx-bar-line);
+    }
+
+    .mab-icon {
+        flex: 0 0 48px;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--lx-bar-ink) !important;
+        border: 1px solid var(--lx-bar-line);
+        font-size: 1.15rem;
+        text-decoration: none !important;
+    }
+
+    .mab-icon.mab-wa {
+        background: #1faf5a;
+        border-color: transparent;
+        color: #fff !important;
+        font-size: 1.35rem;
+    }
+
+    .mab-cta {
+        flex: 1 1 auto;
+        min-width: 0;
+        height: 48px;
+        border: none;
+        border-radius: 14px;
+        background: var(--lx-cta-bg);
+        color: var(--lx-cta-ink);
+        font: inherit;
+        font-weight: 600;
+        font-size: 0.82rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 12px;
+        cursor: pointer;
+    }
+
+    .mab-cta span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 420px) {
+    .mab-cta i {
+        display: none;
+    }
+}
+
+@media (max-width: 360px) {
+    .benefits-list {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ===== Desktop ===== */
+@media (min-width: 900px) {
+    #how-it-works > div {
+        display: grid !important;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        position: relative;
+        padding-top: 30px;
+    }
+
+    #how-it-works > div::before {
+        content: "";
+        position: absolute;
+        top: 7px;
+        left: 8%;
+        right: 8%;
+        height: 2px;
+        background: var(--line, rgba(127, 127, 127, 0.25));
+    }
+
+    #how-it-works > div > div {
+        position: relative;
+        max-width: none !important;
+        flex: none !important;
+        text-align: start !important;
+        padding: 20px 16px !important;
+    }
+
+    #how-it-works > div > div::before {
+        content: "";
+        position: absolute;
+        top: -30px;
+        inset-inline-start: 50%;
+        transform: translateX(50%);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--lx-dot);
+        border: 2px solid var(--lx-accent);
+        box-sizing: border-box;
+    }
+
+    #how-it-works h3 {
+        font-size: 1rem !important;
+    }
+
+    #how-it-works p {
+        font-size: 0.9rem !important;
+    }
+
+    .benefits-list {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+
+    .benefits-list li {
+        margin: 0 !important;
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1099px) {
+    #how-it-works > div {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        row-gap: 44px !important;
+    }
+
+    #how-it-works > div::before {
+        display: none;
+    }
+}
