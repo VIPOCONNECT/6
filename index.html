@@ -1697,6 +1697,10 @@
                 <span class="lang-name">中文</span>
             </a>
         </div>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Light / Dark" title="Light / Dark">
+            <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
+            <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
+        </button>
     </div>
     <!-- תוכן נסתר לקידום SEO -->
     <div style="display:none;">
@@ -4794,3 +4798,67 @@ function toggleCatalogMenu(id) {
                 font-size: 0.9em;
             }
         </style>
+<link rel="stylesheet" href="css/modern.css" id="theme-css">
+<style>
+    .theme-toggle {
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        transform: translateY(-50%);
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: 1px solid var(--line, rgba(255, 255, 255, 0.3));
+        background: transparent;
+        color: var(--ink, #fff);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .theme-toggle:hover {
+        background: rgba(127, 127, 127, 0.15);
+    }
+    .theme-toggle:focus-visible {
+        outline: 2px solid #d4b26a;
+        outline-offset: 2px;
+    }
+    html[dir="ltr"] .theme-toggle {
+        left: auto;
+        right: 16px;
+    }
+    .theme-icon-light { display: none; }
+    html[data-theme="dark"] .theme-icon-light { display: inline; }
+    html[data-theme="dark"] .theme-icon-dark { display: none; }
+    @media (max-width: 480px) {
+        .theme-toggle { width: 34px; height: 34px; left: 8px; font-size: 13px; }
+        html[dir="ltr"] .theme-toggle { right: 8px; }
+    }
+</style>
+<script>
+    (function () {
+        var THEMES = { light: "css/modern.css", dark: "css/modern-dark.css" };
+        var link = document.getElementById("theme-css");
+        var btn = document.getElementById("theme-toggle");
+
+        function apply(theme) {
+            if (!THEMES[theme]) theme = "light";
+            link.setAttribute("href", THEMES[theme]);
+            document.documentElement.setAttribute("data-theme", theme);
+            try { localStorage.setItem("vipo-theme", theme); } catch (e) {}
+        }
+
+        var saved = null;
+        try { saved = localStorage.getItem("vipo-theme"); } catch (e) {}
+        apply(saved || "light");
+
+        if (btn) {
+            btn.addEventListener("click", function () {
+                var current = document.documentElement.getAttribute("data-theme");
+                apply(current === "dark" ? "light" : "dark");
+            });
+        }
+    })();
+</script>
