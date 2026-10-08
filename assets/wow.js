@@ -209,8 +209,19 @@
                 var id = m ? m[1] : "";
                 var chip = document.createElement("button");
                 chip.type = "button";
-                chip.className = "wow-chip";
+                chip.className = "wow-chip wow-cat";
                 if (hidden) chip.tabIndex = -1;
+                if (id) {
+                    var img = document.createElement("img");
+                    img.src = "assets/img/cat-" + id + ".jpg";
+                    img.alt = "";
+                    img.loading = "lazy";
+                    img.decoding = "async";
+                    img.onerror = function () { this.remove(); chip.classList.add("wow-cat-noimg"); };
+                    chip.appendChild(img);
+                }
+                var cap = document.createElement("span");
+                cap.className = "wow-cat-cap";
                 var icon = document.createElement("i");
                 icon.className = "fas " + (CATEGORY_ICONS[id] || "fa-box");
                 icon.setAttribute("aria-hidden", "true");
@@ -218,8 +229,9 @@
                 label.className = "translatable";
                 if (h.dataset.key) label.setAttribute("data-key", h.dataset.key);
                 label.textContent = h.textContent;
-                chip.appendChild(icon);
-                chip.appendChild(label);
+                cap.appendChild(icon);
+                cap.appendChild(label);
+                chip.appendChild(cap);
                 chip.addEventListener("click", function () {
                     if (typeof toggleSidebar === "function") toggleSidebar();
                     if (id && typeof toggleCatalogMenu === "function") {
@@ -247,7 +259,9 @@
             ".benefits h2", ".benefits-list li",
             ".testimonials-title", ".testimonial-card",
             ".contact h2", ".contact-form",
-            ".calculator-section"
+            ".calculator-section",
+            ".benefits-image",
+            ".wow-cta-inner"
         ];
         var els = [];
         selectors.forEach(function (sel) {
@@ -259,15 +273,17 @@
         });
 
         if (reduceMotion || !window.IntersectionObserver) {
-            els.forEach(function (el) { el.classList.add("is-in"); });
+            els.forEach(function (el) { el.classList.add("is-in", "wow-settled"); });
             return;
         }
 
         var io = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add("is-in");
-                    io.unobserve(entry.target);
+                    var el = entry.target;
+                    el.classList.add("is-in");
+                    io.unobserve(el);
+                    setTimeout(function () { el.classList.add("wow-settled"); }, 1100);
                 }
             });
         }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
@@ -308,11 +324,233 @@
         update();
     }
 
+    function textOf(selector, fallback) {
+        var el = document.querySelector(selector);
+        return el ? el.textContent.trim() : (fallback || "");
+    }
+
+    function translatableSpan(key, selector) {
+        var s = document.createElement("span");
+        s.className = "translatable";
+        s.setAttribute("data-key", key);
+        s.textContent = textOf(selector || '[data-key="' + key + '"]');
+        return s;
+    }
+
+    function iconEl(cls) {
+        var i = document.createElement("i");
+        i.className = cls;
+        i.setAttribute("aria-hidden", "true");
+        return i;
+    }
+
+    function openCatalog() {
+        if (typeof toggleSidebar === "function") toggleSidebar();
+    }
+
+    /* ---------- Desktop sticky nav ---------- */
+    function initNav() {
+        var bar = document.querySelector(".language-switcher-top");
+        if (!bar) return;
+        var benefits = document.querySelector("section.benefits");
+        if (benefits && !benefits.id) benefits.id = "why-vipo";
+
+        var brand = document.createElement("a");
+        brand.className = "wow-brand";
+        brand.href = "#";
+        brand.textContent = "VIPO";
+        brand.addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+
+        var nav = document.createElement("nav");
+        nav.className = "wow-nav";
+        [
+            ["#services", "services.title"],
+            ["#why-vipo", "whyUs.title"],
+            ["#testimonials", "testimonials.title"],
+            ["#contact", "contact.title"]
+        ].forEach(function (pair) {
+            if (!document.querySelector(pair[0])) return;
+            var a = document.createElement("a");
+            a.href = pair[0];
+            a.appendChild(translatableSpan(pair[1]));
+            nav.appendChild(a);
+        });
+
+        var cta = document.createElement("button");
+        cta.type = "button";
+        cta.className = "wow-nav-cta wow-magnetic";
+        cta.appendChild(iconEl("fas fa-folder-open"));
+        cta.appendChild(translatableSpan("catalog.title"));
+        cta.addEventListener("click", openCatalog);
+
+        bar.insertBefore(nav, bar.firstChild);
+        bar.insertBefore(brand, bar.firstChild);
+        bar.appendChild(cta);
+        bar.classList.add("wow-bar");
+
+        var onScroll = function () { bar.classList.toggle("is-scrolled", window.scrollY > 24); };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+    }
+
+    /* ---------- Hero aurora + scroll cue ---------- */
+    function initAurora() {
+        var hero = document.querySelector(".container > header");
+        if (!hero) return;
+        var aurora = document.createElement("div");
+        aurora.className = "wow-aurora";
+        aurora.setAttribute("aria-hidden", "true");
+        for (var i = 1; i <= 3; i++) {
+            var b = document.createElement("span");
+            b.className = "wow-blob wow-blob-" + i;
+            aurora.appendChild(b);
+        }
+        hero.insertBefore(aurora, hero.firstChild);
+
+        var cue = document.createElement("a");
+        cue.className = "wow-scroll-cue";
+        cue.href = "#";
+        cue.setAttribute("aria-label", "\u2193");
+        cue.appendChild(iconEl("fas fa-chevron-down"));
+        cue.addEventListener("click", function (e) {
+            e.preventDefault();
+            var target = document.querySelector(".intro-container");
+            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        hero.appendChild(cue);
+    }
+
+    /* ---------- Benefits photo ---------- */
+    function initBenefitsPhoto() {
+        var holder = document.querySelector(".benefits-image .image-container");
+        if (!holder) return;
+        var img = document.createElement("img");
+        img.className = "wow-benefits-photo";
+        img.src = "assets/img/port.jpg";
+        img.alt = "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        holder.appendChild(img);
+        holder.classList.add("wow-photo-frame");
+    }
+
+    /* ---------- Closing call-to-action band ---------- */
+    function initCta() {
+        var footer = document.querySelector("footer.footer-new");
+        if (!footer) return;
+        var band = document.createElement("div");
+        band.className = "wow-cta";
+        var inner = document.createElement("div");
+        inner.className = "wow-cta-inner";
+
+        var title = document.createElement("h2");
+        title.appendChild(translatableSpan("intro.highlight"));
+        var sub = document.createElement("p");
+        sub.appendChild(translatableSpan("header.slogan"));
+
+        var actions = document.createElement("div");
+        actions.className = "wow-cta-actions";
+
+        var primary = document.createElement("button");
+        primary.type = "button";
+        primary.className = "wow-cta-primary wow-magnetic";
+        primary.appendChild(iconEl("fas fa-folder-open"));
+        primary.appendChild(translatableSpan("ui.newCatalogButton"));
+        primary.addEventListener("click", openCatalog);
+
+        var wa = document.createElement("a");
+        wa.className = "wow-cta-btn wow-cta-wa wow-magnetic";
+        wa.href = "https://wa.me/972587009938";
+        wa.target = "_blank";
+        wa.rel = "noopener";
+        wa.setAttribute("aria-label", "WhatsApp");
+        wa.appendChild(iconEl("fab fa-whatsapp"));
+
+        var tel = document.createElement("a");
+        tel.className = "wow-cta-btn wow-magnetic";
+        tel.href = "tel:0587009938";
+        tel.setAttribute("aria-label", "058-7009938");
+        tel.appendChild(iconEl("fas fa-phone-alt"));
+        var num = document.createElement("span");
+        num.dir = "ltr";
+        num.textContent = "058-7009938";
+        tel.appendChild(num);
+
+        actions.appendChild(primary);
+        actions.appendChild(wa);
+        actions.appendChild(tel);
+        inner.appendChild(title);
+        inner.appendChild(sub);
+        inner.appendChild(actions);
+        band.appendChild(inner);
+        footer.parentNode.insertBefore(band, footer);
+    }
+
+    /* ---------- Desktop pointer effects ---------- */
+    function initHover() {
+        if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+        document.querySelectorAll(".service-card, .testimonial-card, .benefits-list li, .wow-cat").forEach(function (card) {
+            card.classList.add("wow-tilt");
+            var spot = document.createElement("span");
+            spot.className = "wow-spot";
+            spot.setAttribute("aria-hidden", "true");
+            card.appendChild(spot);
+            card.addEventListener("pointermove", function (e) {
+                var r = card.getBoundingClientRect();
+                var x = (e.clientX - r.left) / r.width;
+                var y = (e.clientY - r.top) / r.height;
+                card.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+                card.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+                card.style.setProperty("--ry", ((x - 0.5) * 6).toFixed(2) + "deg");
+                card.style.setProperty("--rx", ((0.5 - y) * 6).toFixed(2) + "deg");
+            });
+            card.addEventListener("pointerleave", function () {
+                card.style.setProperty("--rx", "0deg");
+                card.style.setProperty("--ry", "0deg");
+            });
+        });
+
+        document.querySelectorAll(".catalog-button, .submit-btn").forEach(function (b) { b.classList.add("wow-magnetic"); });
+        document.querySelectorAll(".wow-magnetic").forEach(function (b) {
+            b.addEventListener("pointermove", function (e) {
+                var r = b.getBoundingClientRect();
+                var dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+                var dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+                b.style.setProperty("--mgx", (dx * 6).toFixed(1) + "px");
+                b.style.setProperty("--mgy", (dy * 4).toFixed(1) + "px");
+            });
+            b.addEventListener("pointerleave", function () {
+                b.style.setProperty("--mgx", "0px");
+                b.style.setProperty("--mgy", "0px");
+            });
+        });
+    }
+
+    /* ---------- Floating-label form ---------- */
+    function initForm() {
+        document.querySelectorAll("#contact-form .form-group").forEach(function (g) {
+            var field = g.querySelector("input, textarea");
+            if (!field || !g.querySelector("label")) return;
+            g.classList.add("wow-float");
+            if (field.tagName === "TEXTAREA") g.classList.add("wow-float-area");
+            var sync = function () { g.classList.toggle("is-filled", field.value.trim() !== ""); };
+            field.addEventListener("focus", function () { g.classList.add("is-focus"); });
+            field.addEventListener("blur", function () { g.classList.remove("is-focus"); sync(); });
+            field.addEventListener("input", sync);
+            sync();
+        });
+    }
+
     function init() {
-        try { initMarquee(); } catch (e) { console.error("wow marquee", e); }
-        try { initGlobe(); } catch (e) { console.error("wow globe", e); }
-        try { initReveal(); } catch (e) { console.error("wow reveal", e); }
-        try { initTimeline(); } catch (e) { console.error("wow timeline", e); }
+        var steps = [
+            ["nav", initNav], ["aurora", initAurora], ["marquee", initMarquee], ["globe", initGlobe],
+            ["benefits", initBenefitsPhoto], ["cta", initCta], ["form", initForm],
+            ["reveal", initReveal], ["timeline", initTimeline], ["hover", initHover]
+        ];
+        steps.forEach(function (s) {
+            try { s[1](); } catch (e) { console.error("wow " + s[0], e); }
+        });
     }
 
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
