@@ -1685,6 +1685,21 @@
             console.log(`Updated ${updatedElementsCount} translated elements to ${lang}`);
         }
     </script>
+    <script>
+        (function () {
+            var root = document.documentElement, theme = "light";
+            try { theme = localStorage.getItem("vipo-theme") || "light"; } catch (e) {}
+            root.setAttribute("data-theme", theme);
+            root.classList.add("vipo-loading");
+            setTimeout(function () { root.classList.remove("vipo-loading"); }, 4000);
+        })();
+    </script>
+    <style>
+        html.vipo-loading { background: #f4f6fa; }
+        html.vipo-loading[data-theme="dark"] { background: #070a12; }
+        html.vipo-loading body { opacity: 0 !important; }
+        body { transition: opacity 0.25s ease; }
+    </style>
 </head>
 <body>
     <!-- מתג החלפת שפה עם דגלים בעיצוב חדש -->
@@ -4893,5 +4908,19 @@ function toggleCatalogMenu(id) {
                 apply(current === "dark" ? "light" : "dark");
             });
         }
+
+        var themeReady = link.getAttribute("href") === "css/modern.css";
+        var domReady = document.readyState !== "loading";
+        function reveal() {
+            if (themeReady && domReady) requestAnimationFrame(function () {
+                document.documentElement.classList.remove("vipo-loading");
+            });
+        }
+        if (!themeReady) {
+            link.addEventListener("load", function () { themeReady = true; reveal(); });
+            link.addEventListener("error", function () { themeReady = true; reveal(); });
+        }
+        if (!domReady) document.addEventListener("DOMContentLoaded", function () { domReady = true; reveal(); });
+        reveal();
     })();
 </script>
