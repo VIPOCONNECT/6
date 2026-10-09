@@ -647,7 +647,7 @@
     var LP_COVERS = ["8Qyup", "MZKP3", "hUYAQ", "snhha", "y0Xcx", "Af7eO", "Icq4b", "6Fmy1", "UTYvj",
         "kXZgV", "iNCOx", "oUghk", "Nl1ey", "4Xrbg", "VaSf6", "aIcAa", "kd2BP"];
     var LP_DEAD = ["tdZzu"];
-    var JPG_CATALOGS = ["19"];
+    var JPG_CATALOGS = ["19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42"];
 
     function coverFor(href, catId) {
         var m = /vipocatalog\.github\.io\/(\d+)\//.exec(href);
