@@ -647,11 +647,11 @@
     var LP_COVERS = ["8Qyup", "MZKP3", "hUYAQ", "snhha", "y0Xcx", "Af7eO", "Icq4b", "6Fmy1", "UTYvj",
         "kXZgV", "iNCOx", "oUghk", "Nl1ey", "4Xrbg", "VaSf6", "aIcAa", "kd2BP"];
     var LP_DEAD = ["tdZzu"];
-    var JPG_CATALOGS = ["19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42"];
+    var JPG_CATALOGS = ["19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43"];
 
     function coverFor(href, catId) {
-        var m = /vipocatalog\.github\.io\/(\d+)\//.exec(href);
-        if (m) return "https://vipocatalog.github.io/" + m[1] + "/images/page_1." +
+        var m = /vipocatalog\.github\.io\/(\d+)\/([a-z0-9-]+\/)?/.exec(href);
+        if (m) return "https://vipocatalog.github.io/" + m[1] + "/" + (m[2] || "") + "images/page_1." +
             (JPG_CATALOGS.indexOf(m[1]) !== -1 ? "jpg" : "webp");
         m = /lp6\.me\/([A-Za-z0-9]+)/.exec(href);
         if (m && LP_COVERS.indexOf(m[1]) !== -1) return "assets/img/cat/lp-" + m[1] + ".jpg";
