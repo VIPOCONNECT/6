@@ -1402,7 +1402,7 @@ html[lang="en"] .nfx-hero::after {
     }
 
     .nfx-card {
-        width: 64vw;
+        width: min(64vw, 300px);
     }
 
     .nfx-card-go {
