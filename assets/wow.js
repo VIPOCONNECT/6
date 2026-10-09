@@ -647,10 +647,12 @@
     var LP_COVERS = ["8Qyup", "MZKP3", "hUYAQ", "snhha", "y0Xcx", "Af7eO", "Icq4b", "6Fmy1", "UTYvj",
         "kXZgV", "iNCOx", "oUghk", "Nl1ey", "4Xrbg", "VaSf6", "aIcAa", "kd2BP"];
     var LP_DEAD = ["tdZzu"];
+    var JPG_CATALOGS = ["19"];
 
     function coverFor(href, catId) {
         var m = /vipocatalog\.github\.io\/(\d+)\//.exec(href);
-        if (m) return "https://vipocatalog.github.io/" + m[1] + "/images/page_1.webp";
+        if (m) return "https://vipocatalog.github.io/" + m[1] + "/images/page_1." +
+            (JPG_CATALOGS.indexOf(m[1]) !== -1 ? "jpg" : "webp");
         m = /lp6\.me\/([A-Za-z0-9]+)/.exec(href);
         if (m && LP_COVERS.indexOf(m[1]) !== -1) return "assets/img/cat/lp-" + m[1] + ".jpg";
         return "assets/img/cat-" + catId + ".jpg";
